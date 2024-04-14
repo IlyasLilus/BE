@@ -1,0 +1,226 @@
+body{
+    margin: 0;
+    padding: 0;
+    color: white;
+    font-family: "Poppins", sans-serif;
+}
+
+.background{
+    position:absolute;
+    z-index: -1;
+    width: 100vw;
+}
+
+.header-container{
+    display: flex;
+    background-color: #000000;
+    width: 100vw;
+    height: 20vh;
+    align-items: center;
+}
+
+.navbar-left{
+    display: flex;
+    justify-content: space-around;
+    align-items: center;
+    width: 20%;
+    height: 100%;
+}
+
+a {
+    text-decoration: none; 
+    color: white; 
+}
+
+.navbar-mid{
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    width: 50%;
+}
+
+.navbar-right{
+    display: flex;
+    width: 30%;
+    flex-direction: row;
+    justify-content: center;
+    align-items: center;
+}
+
+.Compte {
+    border-radius: 76px;
+    color: #FFFFFF;
+    background: #B557FF;
+    font-weight: 1000;
+    font-size: 17px;
+    height: 54px;
+    width: 145px;
+}
+
+.Description {
+    /* Effectue des simulations de routage avec NetVision NetVision est l’outil le plus performant de sa génération */
+
+    position: absolute;
+    width: 1072px;
+    height: 92px;
+    left: 196px;
+    top: 165px;
+    
+    font-family: 'Volkhov';
+    font-style: normal;
+    font-weight: 700;
+    font-size: 36px;
+    line-height: 46px;
+    display: flex;
+    align-items: flex-end;
+    text-align: center;
+    color: #F3E8EE;
+}
+.Description-highlight{
+    color: #B557FF;
+}
+
+
+/* Image planete connectée*/
+.image1{
+    position: absolute;
+    width: 100vw;
+    height: 35vw;
+    left: 0px;
+    top: 380px;
+}
+
+
+
+.Card1{
+    position: absolute;
+    width: 20vw;
+    height: 20vw;
+    left: 150px;
+    top: 480px;
+
+    background: #f5f5f5;
+    border-radius: 8px;
+}
+
+.Card2{
+    position: absolute;
+    width: 20vw;
+    height: 20vw;
+    left: 562px;
+    top: 480px;
+
+    background: #f5f5f5;
+    border-radius: 8px;
+}
+
+.Card3{
+    position: absolute;
+    width: 20vw;
+    height: 20vw;
+    left: 974px;
+    top: 480px;
+
+    background: #f5f5f5;
+    border-radius: 8px;
+}
+
+.Decouvrir-container{
+    position: absolute;
+    width: 429.13px;
+    height: 50.49px;
+    left: 493px;
+    top: 665px;
+
+    background: #6531FC;
+    box-shadow: 0px 12.1167px 24.2334px rgba(255, 255, 255, 0.3);
+    border-radius: 8.07781px;
+}
+
+/* Découvrir maintenant ! */
+.Decouvrir{
+    position: absolute;
+    width: 191px;
+    height: 24px;
+    left: 613px;
+    top: 678px;
+
+    font-family: 'Poppins';
+    font-style: normal;
+    font-weight: 600;
+    font-size: 16.1556px;
+    line-height: 24px;
+    text-align: center;
+
+    color: #FFFFFF;
+}
+
+
+/* Simulation performante et modulable Utilisable par les professionnels et les amateurs */
+.CTAsimulation{
+    position: absolute;
+    width: 322px;
+    height: 146px;
+    left: 562px;
+    top: 900px;
+
+    font-family: 'Poppins';
+    font-style: normal;
+    font-weight: 500;
+    font-size: 20px;
+    line-height: 30px;
+    align-items: middle;
+
+    color: #F3E8EE;
+}
+
+/* Un problème ? Envoyez un simple mail à nos équipes, vous recevrez une réponse sous 24h */
+.CTAprobleme{
+    position: absolute;
+    width: 300px;
+    height: 148px;
+    left: 150px;
+    top: 900px;
+
+    font-family: 'Poppins';
+    font-style: normal;
+    font-weight: 500;
+    font-size: 20px;
+    line-height: 30px;
+    align-items: middle;
+
+    color: #F3E8EE;
+}
+
+
+/* SIMULATION SUPPORT CLIENT 7j/7 24h/24 */
+.CTAsupport{
+    position: absolute;
+    width: 296px;
+    height: 152px;
+    left: 974px;
+    top: 900px;
+
+    font-family: 'Poppins';
+    font-style: normal;
+    font-weight: 500;
+    font-size: 20px;
+    line-height: 30px;
+    align-items: middle;
+
+    color: #F3E8EE;
+}
+
+.CTA-highlight{
+    color: #D81159;
+
+}
+.footer-container{
+    position: fixed;
+    bottom: 0;
+    left: 0;
+    width: 100%;
+    display: flex;
+    justify-content: center;
+    margin-top: auto;
+}
