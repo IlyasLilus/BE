@@ -5,6 +5,12 @@ body{
     font-family: "Poppins", sans-serif;
 }
 
+.background{
+    position:absolute;
+    z-index: -1;
+    width: 100vw;
+}
+
 .header-container{
     display: flex;
     background-color: #000000;
@@ -12,9 +18,43 @@ body{
     height: 20vh;
 }
 
-.background{
-    position:absolute;
-    z-index: -1;
-    width: 100vw;
+a {
+    text-decoration: none; 
+    color: white; 
 }
+
+.navbar-left{
+    display: flex;
+    justify-content: space-around;
+    align-items: center;
+    width: 33%;
+}
+
+.navbar-mid{
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    width: 35%;
+}
+
+.navbar-right{
+    display: flex;
+    width: 33%;
+    flex-direction: row;
+    justify-content: flex-end;
+    align-items: center;
+}
+
+.Deconnexion {
+    margin-right: 100px;
+    border-radius: 76px;
+    color: #FFFFFF;
+    background: #B557FF;
+    font-weight: 1000;
+    font-size: 17px;
+    height: 54px;
+    width: 145px;
+}
+
+
 
