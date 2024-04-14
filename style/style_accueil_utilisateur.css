@@ -16,6 +16,15 @@ body{
     background-color: #000000;
     width: 100vw;
     height: 20vh;
+    align-items: center;
+}
+
+.navbar-left{
+    display: flex;
+    justify-content: space-around;
+    align-items: center;
+    width: 20%;
+    height: 100%;
 }
 
 a {
@@ -23,30 +32,22 @@ a {
     color: white; 
 }
 
-.navbar-left{
-    display: flex;
-    justify-content: space-around;
-    align-items: center;
-    width: 33%;
-}
-
 .navbar-mid{
     display: flex;
     justify-content: center;
     align-items: center;
-    width: 35%;
+    width: 50%;
 }
 
 .navbar-right{
     display: flex;
-    width: 33%;
+    width: 30%;
     flex-direction: row;
-    justify-content: flex-end;
+    justify-content: center;
     align-items: center;
 }
 
 .Deconnexion {
-    margin-right: 100px;
     border-radius: 76px;
     color: #FFFFFF;
     background: #B557FF;
@@ -56,5 +57,120 @@ a {
     width: 145px;
 }
 
+.Bienvenue{
+    display:flex;
+    justify-content: center;
+    margin-top: 150px;
+    font-size: 50px;
+}
 
+.Bienvenue-container{
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    background: black;
+    opacity:75%;
+    width: 45vw;
+    height: 20vh;
+    border-radius: 40px;
+}
 
+.Bienvenue-container span{
+    color:#B557FF;
+}
+.texte-bienvenue{
+    display:flex;
+}
+
+.Projets {
+    display: flex;
+    width: 100%;
+    margin-top: 150px;
+    box-sizing: border-box;
+    justify-content: center;
+}
+
+.Projets-container {
+    display: flex;
+    background-color: black;
+    width: 75%;
+    border-radius: 40px;
+    opacity:75%;
+    flex-direction: column;
+    align-items: center;
+    height: 70vh;
+}
+
+.Projets-title {
+    font-size: 50px;
+    font-weight: bold;
+    margin-bottom: 20px;
+}
+
+.Projets-content {
+    display: flex;
+    margin-top: 100px;
+    flex-direction: column;
+    gap: 20px;
+}
+
+.Projets-content-container {
+    display: flex;
+    flex-direction: row;
+    width: 50vw;
+    justify-content: space-around;
+}
+
+.Projets-content-container-title {
+    font-size: 20px;
+    color:#B557FF;
+    font-weight:bolder;
+}
+
+.Projets-content-container-description {
+    margin-top: 10px;
+    margin-bottom: 20px;
+}
+
+.Projets-content-container-button {
+    align-self: flex-end;
+}
+
+.Projets-content-container-button-supprimer button {
+    padding: 10px 20px;
+    font-size: 16px;
+    border-radius: 76px;
+    color: black;
+    background: white;
+    cursor: pointer;
+}
+
+.Projets-content-container-button-acceder button {
+    padding: 10px 20px;
+    font-size: 16px;
+    border-radius: 76px;
+    color: #FFFFFF;
+    background: #B557FF;
+    cursor: pointer;
+}
+
+.bouton-creation-container{
+    display: flex;
+    justify-content: center;
+    margin-top:450px;
+}
+
+.bouton-creation{
+    border-radius: 76px;
+    color: #FFFFFF;
+    background: #B557FF;
+    font-size: 17px;
+    height: 54px;
+    width: 200px;
+}
+
+.footer-container{
+    display: flex;
+    justify-content: center;
+    margin-top:500px;
+}
