@@ -5,9 +5,18 @@ body{
     font-family: "Poppins", sans-serif;
 }
 
+.filter{
+    position: absolute;
+    z-index: -1;
+    width: 100vw;
+    background: linear-gradient(180deg, rgba(0, 0, 0, 0.7) 0%, rgba(0, 0, 0, 0.6) 100%);
+    background-size: cover;
+    background-position: center;
+}
+
 .background{
     position:absolute;
-    z-index: -1;
+    z-index: -2;
     width: 100vw;
 }
 
@@ -90,8 +99,6 @@ a {
     top: 380px;
 }
 
-
-
 .Card1{
     position: absolute;
     width: 20vw;
@@ -107,7 +114,7 @@ a {
     position: absolute;
     width: 20vw;
     height: 20vw;
-    left: 562px;
+    left: 542px;
     top: 480px;
 
     background: #f5f5f5;
@@ -118,59 +125,56 @@ a {
     position: absolute;
     width: 20vw;
     height: 20vw;
-    left: 974px;
+    left: 940px;
     top: 480px;
 
     background: #f5f5f5;
     border-radius: 8px;
 }
 
-.Decouvrir-container{
-    position: absolute;
-    width: 429.13px;
-    height: 50.49px;
-    left: 493px;
-    top: 665px;
-
-    background: #6531FC;
-    box-shadow: 0px 12.1167px 24.2334px rgba(255, 255, 255, 0.3);
-    border-radius: 8.07781px;
-}
-
 /* Découvrir maintenant ! */
 .Decouvrir{
     position: absolute;
-    width: 191px;
-    height: 24px;
-    left: 613px;
-    top: 678px;
+    width: 430px;
+    height: 50px;
+    left: 460px;
+    top: 778px;
 
-    font-family: 'Poppins';
-    font-style: normal;
     font-weight: 600;
-    font-size: 16.1556px;
+    font-size: 18px;
     line-height: 24px;
     text-align: center;
 
     color: #FFFFFF;
+    background: #6531FC;
+    box-shadow: 0px 12px 24px rgba(255, 255, 255, 0.2);
+    border-radius: 9px;
+}
+
+.CTAcontainer{
+    position: absolute;
+    width: 89vw;
+    height: 171px;
+    left: 8vw;
+    top: 895px;
+    background: linear-gradient(180deg, rgba(36, 36, 36, 0.6) 0%, rgba(36, 36, 36, 0.6) 100%);
+    border-radius: 15px;
 }
 
 
 /* Simulation performante et modulable Utilisable par les professionnels et les amateurs */
 .CTAsimulation{
     position: absolute;
-    width: 322px;
-    height: 146px;
-    left: 562px;
-    top: 900px;
-
+    width: 300px;
+    height: 148px;
+    left: 517px;
+    top: 30px;
     font-family: 'Poppins';
     font-style: normal;
     font-weight: 500;
     font-size: 20px;
     line-height: 30px;
     align-items: middle;
-
     color: #F3E8EE;
 }
 
@@ -179,16 +183,14 @@ a {
     position: absolute;
     width: 300px;
     height: 148px;
-    left: 150px;
-    top: 900px;
-
+    left: 32px;
+    top: 30px;
     font-family: 'Poppins';
     font-style: normal;
     font-weight: 500;
     font-size: 20px;
     line-height: 30px;
     align-items: middle;
-
     color: #F3E8EE;
 }
 
@@ -198,16 +200,14 @@ a {
     position: absolute;
     width: 296px;
     height: 152px;
-    left: 974px;
-    top: 900px;
-
+    left: 939px;
+    top: 30px;
     font-family: 'Poppins';
     font-style: normal;
     font-weight: 500;
     font-size: 20px;
     line-height: 30px;
     align-items: middle;
-
     color: #F3E8EE;
 }
 
@@ -215,6 +215,278 @@ a {
     color: #D81159;
 
 }
+
+.Commencer{
+    position: absolute;
+    width: 430px;
+    height: 50px;
+    left: 340px;
+    top: 220px;
+
+    font-weight: 600;
+    font-size: 18px;
+    line-height: 24px;
+    text-align: center;
+
+    color: #FFFFFF;
+    background: #D81159;
+    box-shadow: 0px 12px 24px rgba(255, 255, 255, 0.2);
+    border-radius: 9px;
+}
+
+
+/* jj-ying-8bghKxNU1j0-unsplash 1 */
+.image2{
+    position: absolute;
+    width: 100vw;
+    height: 30vw;
+    left: 0px;
+    top: 1200px;
+}
+
+
+/* Des utilisateurs satisfaits */
+.textSatisfait{
+    position: absolute;
+    width: 697px;
+    height: 77px;
+    left: 150px;
+    top: 1280px;
+
+    font-family: 'Poppins';
+    font-style: normal;
+    font-weight: 500;
+    font-size: 40px;
+    line-height: 60px;
+    display: flex;
+    align-items: center;
+    text-align: center;
+
+    color: #F3E8EE;
+
+    text-shadow: 0px 4px 4px rgba(31, 47, 191, 0.25);
+}
+
+/* Content */
+.avis{
+    position: absolute;
+    width: 905px;
+    height: 347px;
+    left: 282px;
+    top: 1263px;
+}
+
+.arrows{
+    position: absolute;
+    width: 112px;
+    height: 40px;
+    left: 282px;
+    top: 1304px;
+}
+
+.leftarrow-container{
+    position: absolute;
+    width: 48px;
+    height: 48px;
+    left: -11px;
+    top: 93px;
+
+    transform: matrix(-1, 0, 0, 1, 0, 0);
+    border-radius: 33px;
+}
+
+.leftarrow{
+
+    position: absolute;
+    width: 55px;
+    height: 55px;
+    left: -6px;
+    top: -1px;
+    transform: matrix(-1, 0, 0, 1, 0, 0);
+    
+    border-radius: inherit;
+}
+
+
+.rightarrow-container{
+    position: absolute;
+    width: 48px;
+    height: 48px;
+    left: 77px;
+    top: 93px;
+
+    border-radius: 33px;
+}
+
+.rightarrow{
+    position: absolute;
+    width: 47px;
+    height: 47px;
+    left: -1px;
+    top: -1px;
+    
+    border-radius: inherit;
+
+}
+
+.rightarrow-circle{
+    position: absolute;
+    width: 40px;
+    height: 40px;
+    left: 354px;
+    top: 1304px;
+
+    background: #3F549C;
+
+}
+
+.review-box {
+    transition: transform 0.5s ease-in, opacity 0.5s ease;
+    position: absolute;
+    opacity: 0.5;
+    transform: scale(0.8);
+    z-index: 0;
+    position: absolute;
+    width: 541px;
+    height: 279px;
+    left: 721px;
+    top: 1317px;
+  }
+  
+.review-box.active {
+    transition: transform 0.5s ease-out, opacity 0.3s ease-out;
+
+    opacity: 1;
+    transform: scale(1);
+    display: block; /* Display when active */
+    z-index: 1;
+    position: absolute;
+    width: 541px;
+    height: 279px;
+    left: 661px;
+    top: 1250px;
+}
+
+.Client1{
+    z-index: 1;
+    position: absolute;
+    width: 541px;
+    height: 279px;
+    left: 661px;
+    top: 1250px;
+}
+
+.Client2{
+    z-index: 0;
+    position: absolute;
+    width: 541px;
+    height: 279px;
+    left: 721px;
+    top: 1317px;
+    opacity: 50%;
+}
+
+/* Bg */
+.Client1-Box{
+    position: absolute;
+    width: 481px;
+    height: 190px;
+    left: 0px;
+    top: 40px;
+    background-color: white;
+    border-radius: 20px;
+
+}
+
+/* Testimonail */
+.Client1-Text{
+    position: absolute;
+    width: 402px;
+    height: 32px;
+    left: 32px;
+    top: 62px;
+    font-family: 'Poppins';
+    font-style: normal;
+    font-weight: 500;
+    font-size: 16px;
+    color: #444444;
+}
+
+.Client1-Image{
+    position: absolute;
+    width: 60px;
+    height: 60px;
+    left: -27px;
+    top: 9px;
+    border-radius: 50%;
+}
+
+.Client1-Name{
+    position: absolute;
+    width: 164px;
+    height: 17px;
+    left: 33px;
+    top: 167px;
+    font-family: 'Poppins';
+    font-style: normal;
+    font-weight: 600;
+    font-size: 18px;
+    line-height: 27px;
+    color: #222222;
+}
+
+.Client1-Location{
+    position: absolute;
+    width: 164px;
+    height: 17px;
+    left: 35px;
+    top: 187px;
+    font-family: 'Poppins';
+    font-style: normal;
+    font-weight: 600;
+    font-size: 10px;
+    line-height: 27px;
+    color: #666666;
+}
+
+.Sponsors{
+    position: absolute;
+    width: 1000px;
+    height: 150px;
+    left: 200px;
+    top: 1750px;
+}
+
+.SponsorTitle{
+    position: absolute;
+    width: 458px;
+    height: 72px;
+    left: 300px;
+    top: 0px;
+
+    font-family: 'Poppins';
+    font-style: normal;
+    font-weight: 500;
+    font-size: 48px;
+    line-height: 72px;
+    /* identical to box height */
+    display: flex;
+    align-items: center;
+    text-align: center;
+}
+
+.SponsorImage{
+    position: absolute;
+    width: 1000px;
+    height: 150px;
+    left: 0px;
+    top: 150px;
+
+    filter: drop-shadow(0px 4px 4px rgba(255, 255, 255, 0.25));
+    background-color: rgba(0, 0, 0, 0.849);
+    border-radius: 10px;
+}
+
 .footer-container{
     position: fixed;
     bottom: 0;
