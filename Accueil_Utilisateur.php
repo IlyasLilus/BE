@@ -16,6 +16,8 @@ $stmt = $pdo->prepare($sql);
 $stmt->execute(['pseudonyme' => $id_utilisateur]);
 $role = $stmt->fetchColumn();
 
+$projets = [];
+$tickets = [];
 if ($role == 'utilisateur') {
     $sql = "SELECT fichierProjet.miyaou FROM Projet 
             JOIN posseder ON Projet.idprojet = posseder.projet_id 
