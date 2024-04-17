@@ -1,4 +1,6 @@
-<php>
+<?php
+session_start();
+?>
 <!DOCTYPE html>
 <html>
 <head>
@@ -9,8 +11,8 @@
     <img class="background" src="image/alexander-andrews-fsH1KjbdjE8-unsplash 1.png" alt="Background">
     <section class="filter"></section>
     <header>
-    <section class="header-container">
-            <div class="navbar-left"></div>
+        <section class="header-container">
+            <div class="navbar-left">
                 <div><a href="Accueil.php">Accueil</a></div>
                 <div><a href="About.php">About</a></div>
                 <div><a href="Support.php">Support</a></div>
@@ -19,11 +21,17 @@
                 <img class="logo" src="image/Logo.png" alt="Logo">
             </div>
             <div class="navbar-right">
-                <a href="Accueil_Utilisateur.php">
-                    <button class="Compte">Mon compte</button>
-                </a>
+                <?php if (isset($_SESSION['loggedin']) && $_SESSION['loggedin'] == true): ?>
+                    <a href="Accueil_Utilisateur.php">
+                        <button class="Compte">Mon compte</button>
+                    </a>
+                <?php else: ?>
+                    <a href="Connexion.php">
+                        <button class="Connexion">Connexion</button>
+                    </a>
+                <?php endif; ?>
             </div>
-    </section>
+        </section>
     </header>
     <section class="Description">
         <div>Simulations de routage avec NetVision<br>
@@ -39,8 +47,18 @@
         <div class="Card3">
 
         </div>
-        <button class="Decouvrir">Découvrir Maintenant !</button>
-        
+        <div>
+            <?php if (isset($_SESSION['loggedin']) && $_SESSION['loggedin'] == true): ?>
+                <a href="Accueil_Utilisateur.php">
+                    <button class="Decouvrir">Découvrir Maintenant !</button>
+                </a>
+            <?php else: ?>
+                <a href="Connexion.php">
+                    <button class="Decouvrir">Découvrir Maintenant !</button>
+                </a>
+            <?php endif; ?>
+        </div>
+
     </section>
     <section class="CTAcontainer">
         <div class="CTAsupport">
@@ -59,7 +77,16 @@
             SUPPORT CLIENT</span><br>
             7j/7 24h/24
         </div>
-        <button class="Commencer">Commencer à simuler</button>
+        <?php if (isset($_SESSION['loggedin']) && $_SESSION['loggedin'] == true): ?>
+                <a href="Accueil_Utilisateur.php">
+                    <button class="Commencer">Commencer à simuler</button>
+                </a>
+            <?php else: ?>
+                <a href="Connexion.php">
+                    <button class="Commencer">Commencer à simuler</button>
+                </a>
+            <?php endif; ?>
+        
     </section>
     <section id="reviews">
         <img class="image2" src="image/jj-ying-8bghKxNU1j0-unsplash 1.png" alt="Image2">
@@ -103,14 +130,14 @@
         <div class="Client1-Name">Ashraf Belhiss</div>
         <div class="Client1-Location">Toulouse, France</div>
         <div class="Client1-Text">C’est l’application teh les fou wallah</div>
-        <img class="Client1-image" src="image/1698328915992.jpg" alt="Client1">
+        <img class="Client1-Image" src="image/1698328915992.jpg" alt="Client1">
     </section>
     <section class="review-box" id="Client2">
         <div class="Client1-Box"></div>
         <div class="Client1-Name">André Aoun</div>
         <div class="Client1-Location">Toulouse, France</div>
         <div class="Client1-Text">Ce projet mérite un 20/20</div>
-        <img class="Client1-image" src="image/1698328915992.jpg" alt="Client1">
+        <img class="Client1-Image" src="image/1698328915992.jpg" alt="Client1">
     </section>
     
     <section class="Sponsors">

@@ -32,7 +32,8 @@ body{
     display: flex;
     justify-content: space-around;
     align-items: center;
-    width: 20%;
+    padding: 10px 15px;
+    width: 18%;
     height: 100%;
 }
 
@@ -45,7 +46,7 @@ a {
     display: flex;
     justify-content: center;
     align-items: center;
-    width: 50%;
+    width: 75%;
 }
 
 .navbar-right{
@@ -60,6 +61,16 @@ a {
     border-radius: 76px;
     color: #FFFFFF;
     background: #B557FF;
+    font-weight: 1000;
+    font-size: 17px;
+    height: 54px;
+    width: 145px;
+}
+
+.Connexion {
+    border-radius: 76px;
+    color: #170F49;
+    background: #ffffff;
     font-weight: 1000;
     font-size: 17px;
     height: 54px;
