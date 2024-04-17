@@ -2,22 +2,23 @@
 session_start();
 $id_utilisateur = $_SESSION['id_utilisateur'];
 $host = 'localhost';
-$db   = 'nom_de_la_base_de_donnees';
-$user = 'nom_utilisateur';
-$pass = 'mot_de_passe';
+$db   = 'BE';
+$user = 'postgres';
+$pass = 'a';
 $charset = 'utf8mb4';
+$port = '5432';
 
-$dsn = "mysql:host=$host;dbname=$db;charset=$charset";
+$dsn = "pgsql:host=$host;dbname=$db;port=$port;user=$user;password=$pass";
 $pdo = new PDO($dsn, $user, $pass);
 
-$sql = "SELECT role FROM Utilisateur WHERE id = :id";
+$sql = "SELECT userrole FROM Utilisateur WHERE pseudonyme = :pseudonyme";
 $stmt = $pdo->prepare($sql);
-$stmt->execute(['id' => $id_utilisateur]);
+$stmt->execute(['pseudonyme' => $id_utilisateur]);
 $role = $stmt->fetchColumn();
 
 if ($role == 'utilisateur') {
     $sql = "SELECT fichierProjet.miyaou FROM Projet 
-            JOIN posseder ON Projet.id = posseder.projet_id 
+            JOIN posseder ON Projet.idprojet = posseder.projet_id 
             WHERE posseder.utilisateur_id = :id";
     $stmt = $pdo->prepare($sql);
     $stmt->execute(['id' => $id_utilisateur]);
@@ -29,7 +30,7 @@ if ($role == 'administrateur') {
             JOIN traiter ON TicketSupport.id = traiter.ticket_id 
             WHERE traiter.administrateur_id = :id";
     $stmt = $pdo->prepare($sql);
-    $stmt->execute(['id' => $id_utilisateur]);
+    $stmt->execute(['pseudonyme' => $id_utilisateur]);
     $tickets = $stmt->fetchAll(PDO::FETCH_ASSOC);
 }
 ?>
