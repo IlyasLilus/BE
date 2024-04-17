@@ -1,4 +1,38 @@
-<php>
+<?php
+session_start();
+$id_utilisateur = $_SESSION['id_utilisateur'];
+$host = 'localhost';
+$db   = 'nom_de_la_base_de_donnees';
+$user = 'nom_utilisateur';
+$pass = 'mot_de_passe';
+$charset = 'utf8mb4';
+
+$dsn = "mysql:host=$host;dbname=$db;charset=$charset";
+$pdo = new PDO($dsn, $user, $pass);
+
+$sql = "SELECT role FROM Utilisateur WHERE id = :id";
+$stmt = $pdo->prepare($sql);
+$stmt->execute(['id' => $id_utilisateur]);
+$role = $stmt->fetchColumn();
+
+if ($role == 'utilisateur') {
+    $sql = "SELECT fichierProjet.miyaou FROM Projet 
+            JOIN posseder ON Projet.id = posseder.projet_id 
+            WHERE posseder.utilisateur_id = :id";
+    $stmt = $pdo->prepare($sql);
+    $stmt->execute(['id' => $id_utilisateur]);
+    $projets = $stmt->fetchAll(PDO::FETCH_ASSOC);
+}
+
+if ($role == 'administrateur') {
+    $sql = "SELECT idTicket, RaisonTicket, dateTicket FROM TicketSupport 
+            JOIN traiter ON TicketSupport.id = traiter.ticket_id 
+            WHERE traiter.administrateur_id = :id";
+    $stmt = $pdo->prepare($sql);
+    $stmt->execute(['id' => $id_utilisateur]);
+    $tickets = $stmt->fetchAll(PDO::FETCH_ASSOC);
+}
+?>
 <!DOCTYPE html>
 <html>
 <head>
@@ -31,30 +65,35 @@
         <div class="Projets-container">
             <div class="Projets-title">Mes Projets</div>
             <div class="Projets-content">
-                <div class="Projets-content-container">
-                    <div class="Projets-content-container-title">Projet 1:</div>
-                    <div class="Projets-content-container-description">STRI_Achraf.miyaou</div>
-                    <div class="Projets-content-container-button-acceder"><button>Accéder</button></div>
-                    <div class="Projets-content-container-button-supprimer"><button>Supprimer</button></div>
+                <?php foreach ($projets as $projet): ?>
+                    <div class="Projets-content-container">
+                        <div class="Projets-content-container-title">Projet :</div>
+                        <div class="Projets-content-container-description"><?= $projet['fichierProjet.miyaou'] ?></div>
+                        <div class="Projets-content-container-button-acceder"><button>Accéder</button></div>
+                        <div class="Projets-content-container-button-supprimer"><button>Supprimer</button></div>
+                    </div>
+                <?php endforeach; ?>
+                <div class="bouton-creation-container">
+                    <button class="bouton-creation">Créer un nouveau projet</button>
                 </div>
-                <div class="Projets-content-container">
-                    <div class="Projets-content-container-title">Projet 2:</div>
-                    <div class="Projets-content-container-description">Ilyas_JABALLAH.miyaou</div>
-                    <div class="Projets-content-container-button-acceder"><button>Accéder</button></div>
-                    <div class="Projets-content-container-button-supprimer"><button>Supprimer</button></div>
-                </div>
-                <div class="Projets-content-container">
-                    <div class="Projets-content-container-title">Projet 3:</div>
-                    <div class="Projets-content-container-description">El_Mir2020.miyaou</div>
-                    <div class="Projets-content-container-button-acceder"><button>Accéder</button></div>
-                    <div class="Projets-content-container-button-supprimer"><button>Supprimer</button></div>
-                </div>
-            <div class="bouton-creation-container">
-                <button class="bouton-creation">Créer un nouveau projet</button>
-            </div>
             </div>
         </div>
-    </section>   
+    </section> 
+    <section class="Tickets">
+        <div class="Tickets-container">
+            <div class="Tickets-title">Tickets</div>
+            <div class="Tickets-content">
+                <?php foreach ($tickets as $ticket): ?>
+                    <div class="Tickets-content-container">
+                        <div class="Tickets-content-container-title">Ticket ID: <?= $ticket['idTicket'] ?></div>
+                        <div class="Tickets-content-container-description">Raison: <?= $ticket['RaisonTicket'] ?></div>
+                        <div class="Tickets-content-container-date">Date: <?= $ticket['dateTicket'] ?></div>
+                        <div class="Tickets-content-container-button-traiter"><button>Traiter</button></div>
+                    </div>
+                <?php endforeach; ?>
+            </div>
+        </div>
+    </section>
     <footer>
         <section class="footer-container">
             <div class="footer-content">
@@ -62,4 +101,3 @@
             </div>
         </section>
     </footer>  
-<?>
