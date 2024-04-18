@@ -3,9 +3,9 @@
 session_start();
 if(isset($_POST["submit"])){
     $host = 'localhost';
-    $db = 'test';
+    $db = 'BE';
     $user = 'postgres';
-    $pass = '123';
+    $pass = 'a';
     $port='5432';
     $username=$_POST["username"];
     $mail=$_POST["mail"];
@@ -20,7 +20,7 @@ if(isset($_POST["submit"])){
             echo '<p class="erreur">Mot de passe incorrect</p>';
         }
     else{
-        $sql = "INSERT INTO compte (username, mail, password1, password2) VALUES (?, ?, ?, ?)";
+        $sql = "INSERT INTO compte (username, mail, password1, password2) VALUES (?, ?, ?, ?)";// Edit to follow BD
         $stmt = $pdo->prepare($sql);
 
         // Exécution de la requête avec les valeurs récupérées à partir de $_POST
@@ -66,7 +66,7 @@ if(isset($_POST["submit"])){
         <div class="cont-header">
             <div href=""><a href="Inscription.php"><img class="logo" src="netvision.png" alt=""></a></div>
             <button class="connexion"><a href="" >Connexion</a></button>
-            <button class="commencer"><a href="" >Commencer</a></button>
+            <button class="commencer"><a href="" >S'inscrire</a></button>
         </div>
     </header>
 
