@@ -6,32 +6,28 @@ session_start();
 <head>
     <title>Accueil</title>
     <link rel="stylesheet" type="text/css" href="style/style_accueil.css">
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@800&family=Teko:wght@300;600&display=swap" rel="stylesheet">
 </head>
 <body>
     <img class="background" src="image/alexander-andrews-fsH1KjbdjE8-unsplash 1.png" alt="Background">
     <section class="filter"></section>
-    <header>
-        <section class="header-container">
-            <div class="navbar-left">
-                <div><a href="Accueil.php">Accueil</a></div>
-                <div><a href="About.php">About</a></div>
-                <div><a href="Support.php">Support</a></div>
-            </div>
-            <div class="navbar-mid">
-                <img class="logo" src="image/Logo.png" alt="Logo">
-            </div>
-            <div class="navbar-right">
-                <?php if (isset($_SESSION['loggedin']) && $_SESSION['loggedin'] == true): ?>
-                    <a href="Accueil_Utilisateur.php">
-                        <button class="Compte">Mon compte</button>
-                    </a>
+    <header class="header">
+            <nav>
+                <ul>
+                    <li class="go"><a href="Accueil.php">Accueil</a></li>
+                    <li class="go"><a href="Contact.php">Support</a></li>
+                    <li class="go"><a href="About.php">About</a></li>
+                </ul>
+            </nav>
+        <div class="cont-header">
+            <div><a href="#home"><img class="logo" src="image/netvision.png" alt=""></a></div>
+            <?php if (isset($_SESSION['loggedin']) && $_SESSION['loggedin'] == true): ?>
+                    <button class="commencer"><a href="Acceuil_Utilisateur.php" >Mon compte</a></button>
                 <?php else: ?>
-                    <a href="Connexion.php">
-                        <button class="Connexion">Connexion</button>
-                    </a>
-                <?php endif; ?>
-            </div>
-        </section>
+                    <button class="connexion"><a href="Connexion.php" >Connexion</a></button>
+                    <button class="commencer"><a href="Inscription.php" >S'inscrire</a></button>
+            <?php endif; ?> 
+        </div>
     </header>
     <section class="Description">
         <div>Simulations de routage avec NetVision<br>

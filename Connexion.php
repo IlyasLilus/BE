@@ -13,7 +13,7 @@ if (isset($_POST['connect'])){
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Connexion</title>
-    <link rel="stylesheet" href="conn.css">
+    <link rel="stylesheet" href="style/style_connexion.css">
     <link rel="preconnect" href="https://fonts.googleapis.com">
 <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@800&family=Teko:wght@300;600&display=swap" rel="stylesheet">
 
@@ -24,15 +24,19 @@ if (isset($_POST['connect'])){
     <header class="header">
             <nav>
                 <ul>
-                    <li class="go"><a href="">Accueil</a></li>
-                    <li class="go"><a href="">Support</a></li>
-                    <li class="go"><a href="">About</a></li>
+                    <li class="go"><a href="Accueil.php">Accueil</a></li>
+                    <li class="go"><a href="Contact.php">Support</a></li>
+                    <li class="go"><a href="About.php">About</a></li>
                 </ul>
             </nav>
         <div class="cont-header">
-            <div href=""><a href="#home"><img class="logo" src="netvision.png" alt=""></a></div>
-            <button class="connexion"><a href="" >Connexion</a></button>
-            <button class="commencer"><a href="" >Commencer</a></button>
+            <div><a href="#home"><img class="logo" src="image/netvision.png" alt=""></a></div>
+            <?php if (isset($_SESSION['loggedin']) && $_SESSION['loggedin'] == true): ?>
+                    <button class="commencer"><a href="Acceuil_Utilisateur.php" >Mon compte</a></button>
+                <?php else: ?>
+                    <button class="connexion"><a href="Connexion.php" >Connexion</a></button>
+                    <button class="commencer"><a href="Inscription.php" >S'inscrire</a></button>
+            <?php endif; ?> 
         </div>
     </header>
   

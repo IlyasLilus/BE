@@ -5,24 +5,28 @@
     <meta charset="UTF-8">  
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Contact</title>
-    <link rel="stylesheet" href="contact.css">
+    <link rel="stylesheet" href="style/style_contact.css">
     <link rel="preconnect" href="https://fonts.googleapis.com">
 <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@800&family=Teko:wght@300;600&display=swap" rel="stylesheet">
 </head>
 
 <body>
-<header class="header">
+    <header class="header">
             <nav>
                 <ul>
-                    <li class="go"><a href="">Accueil</a></li>
-                    <li class="go"><a href="">Support</a></li>
-                    <li class="go"><a href="">About</a></li>
+                    <li class="go"><a href="Accueil.php">Accueil</a></li>
+                    <li class="go"><a href="Contact.php">Support</a></li>
+                    <li class="go"><a href="About.php">About</a></li>
                 </ul>
             </nav>
         <div class="cont-header">
-            <div href=""><a href="#home"><img class="logo" src="netvision.png" alt=""></a></div>
-            <button class="connexion"><a href="" >Connexion</a></button>
-            <button class="commencer"><a href="" >Commencer</a></button>
+            <div><a href="#home"><img class="logo" src="image/netvision.png" alt=""></a></div>
+            <?php if (isset($_SESSION['loggedin']) && $_SESSION['loggedin'] == true): ?>
+                    <button class="commencer"><a href="Acceuil_Utilisateur.php" >Mon compte</a></button>
+                <?php else: ?>
+                    <button class="connexion"><a href="Connexion.php" >Connexion</a></button>
+                    <button class="commencer"><a href="Inscription.php" >S'inscrire</a></button>
+            <?php endif; ?> 
         </div>
     </header>
     <section id="Section1">
@@ -40,7 +44,7 @@
                   </form>
              </div>
              <div class="form-img">
-                  <img class="img3" src="imgMail.svg" alt="">
+                  <img class="img3" src="image/imgMail.svg" alt="">
              </div>
         </div>
    </section>

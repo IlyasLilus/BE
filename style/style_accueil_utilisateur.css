@@ -11,50 +11,87 @@ body{
     width: 100vw;
 }
 
-.header-container{
-    display: flex;
-    background-color: #000000;
-    width: 100vw;
-    height: 20vh;
-    align-items: center;
-}
-
-.navbar-left{
-    display: flex;
-    justify-content: space-around;
-    align-items: center;
-    width: 20%;
-    height: 100%;
-}
-
 a {
     text-decoration: none; 
     color: white; 
 }
 
-.navbar-mid{
+.header {
+    height: 50px;
     display: flex;
-    justify-content: center;
+    justify-content: space-between;
     align-items: center;
-    width: 50%;
+    padding: 30px 10%;
+    background-color: black;
+    height: 30px;
+    
 }
 
-.navbar-right{
-    display: flex;
-    width: 30%;
-    flex-direction: row;
-    justify-content: center;
-    align-items: center;
+body{
+    background-image: url("background.png");
 }
 
-.Deconnexion {
-    border-radius: 76px;
-    color: #FFFFFF;
-    background: #B557FF;
-    font-weight: 1000;
-    font-size: 17px;
-    height: 54px;
-    width: 145px;
+.cont-header{
+    display: flex;
+}
+
+.logo{
+    width:80px;
+    height: 70px;
+    position:relative;
+    right:212px;
+
+}
+.cont-header a{
+    color: white;    
+    padding: 10px;
+    font-size: 22px;
+    font-weight: bold;
+    margin-bottom: 0px;
+}
+.commencer a{
+    background-color:rgb(232, 7, 146);
+    border-radius: 30px;
+    margin-left: 15px;  
+}
+.connexion a{
+    background-color: white;
+    color:black;
+    border-radius: 30px;
+}
+button{
+    background: none;
+    border: none;
+}
+.logo:hover{
+    transform: rotate(360deg);
+    transition: 1s;
+}
+nav{
+
+    margin-right: -10%;
+}
+nav li{
+    display: inline-block;
+    padding-right:40px;
+}
+
+li a{
+    font-weight: bold;
+    font-size: 22px;
+
+    color: white;
+}
+
+.go a:hover {
+    cursor: pointer;
+    color: rgb(232, 7, 146);
+    transition: 0.5s;
+}
+
+.when-mobile {
+    display: none;
+
 }
 
 .Bienvenue{
