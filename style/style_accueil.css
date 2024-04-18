@@ -48,7 +48,7 @@ body{
     width:80px;
     height: 70px;
     position:relative;
-    right:212px;
+    right:21vw;
 
 }
 .cont-header a{
@@ -107,10 +107,11 @@ li a{
     /* Effectue des simulations de routage avec NetVision NetVision est l’outil le plus performant de sa génération */
 
     position: absolute;
-    width: 1072px;
+    width: 52vw;
     height: 92px;
-    left: 25vw;
     top: 10vw;
+    left: 50%;
+    transform: translateX(-50%);
     
     font-family: 'Volkhov';
     font-style: normal;
@@ -126,22 +127,26 @@ li a{
     color: #B557FF;
 }
 
+.preview{
+    position: absolute;
+    width: 100vw;
+    height: 30vw;
+    top: 25vw;
+}
 
-/* Image planete connectée*/
 .image1{
     position: absolute;
     width: 100vw;
-    height: 35vw;
-    left: 0px;
-    top: 380px;
+    height: 30vw;
+
 }
 
 .Card1{
     position: absolute;
     width: 20vw;
     height: 20vw;
-    left: 150px;
-    top: 480px;
+    left: 10%;
+    top: 5vw;
 
     background: #f5f5f5;
     border-radius: 8px;
@@ -151,8 +156,8 @@ li a{
     position: absolute;
     width: 20vw;
     height: 20vw;
-    left: 542px;
-    top: 480px;
+    left: 40%;
+    top: 5vw;
 
     background: #f5f5f5;
     border-radius: 8px;
@@ -162,8 +167,8 @@ li a{
     position: absolute;
     width: 20vw;
     height: 20vw;
-    left: 940px;
-    top: 480px;
+    left: 70%;
+    top: 5vw;
 
     background: #f5f5f5;
     border-radius: 8px;
@@ -172,10 +177,11 @@ li a{
 /* Découvrir maintenant ! */
 .Decouvrir{
     position: absolute;
-    width: 430px;
-    height: 50px;
-    left: 460px;
-    top: 778px;
+    width: 35vw;
+    height: 4vw;
+    left: 50%;
+    transform: translateX(-50%);
+    top: 19vw;
 
     font-weight: 600;
     font-size: 18px;
@@ -190,10 +196,11 @@ li a{
 
 .CTAcontainer{
     position: absolute;
-    width: 89vw;
-    height: 171px;
-    left: 8vw;
-    top: 895px;
+    width: 90%;
+    height: 15vw;
+    left: 50%;
+    transform: translateX(-50%);
+    top: 60vw;
     background: linear-gradient(180deg, rgba(36, 36, 36, 0.6) 0%, rgba(36, 36, 36, 0.6) 100%);
     border-radius: 15px;
 }
@@ -204,8 +211,8 @@ li a{
     position: absolute;
     width: 300px;
     height: 148px;
-    left: 517px;
-    top: 30px;
+    left: 46%;
+    top: 20%;
     font-family: 'Poppins';
     font-style: normal;
     font-weight: 500;
@@ -215,13 +222,14 @@ li a{
     color: #F3E8EE;
 }
 
+
 /* Un problème ? Envoyez un simple mail à nos équipes, vous recevrez une réponse sous 24h */
 .CTAprobleme{
     position: absolute;
-    width: 300px;
+    width: 311px;
     height: 148px;
-    left: 32px;
-    top: 30px;
+    left: 5%;
+    top: 20%;
     font-family: 'Poppins';
     font-style: normal;
     font-weight: 500;
@@ -237,8 +245,8 @@ li a{
     position: absolute;
     width: 296px;
     height: 152px;
-    left: 939px;
-    top: 30px;
+    left: 78%;
+    top: 20%;
     font-family: 'Poppins';
     font-style: normal;
     font-weight: 500;
@@ -253,42 +261,31 @@ li a{
 
 }
 
-.Commencer{
+
+.reviews{
     position: absolute;
-    width: 430px;
-    height: 50px;
-    left: 340px;
-    top: 220px;
-
-    font-weight: 600;
-    font-size: 18px;
-    line-height: 24px;
-    text-align: center;
-
-    color: #FFFFFF;
-    background: #D81159;
-    box-shadow: 0px 12px 24px rgba(255, 255, 255, 0.2);
-    border-radius: 9px;
+    width: 100vw;
+    height: 30vw;
+    left: 0px;
+    top: 90vw;
 }
 
-
-/* jj-ying-8bghKxNU1j0-unsplash 1 */
 .image2{
     position: absolute;
     width: 100vw;
     height: 30vw;
     left: 0px;
-    top: 1200px;
+    top: 0px;
 }
 
 
 /* Des utilisateurs satisfaits */
 .textSatisfait{
     position: absolute;
-    width: 697px;
-    height: 77px;
-    left: 150px;
-    top: 1280px;
+    width: 39vw;
+    height: 7vw;
+    left: 10vw;
+    top: 5vw;
 
     font-family: 'Poppins';
     font-style: normal;
@@ -309,16 +306,16 @@ li a{
     position: absolute;
     width: 905px;
     height: 347px;
-    left: 282px;
-    top: 1263px;
+    left: 20vw;
+    top: 5vw;
 }
 
 .arrows{
     position: absolute;
     width: 112px;
     height: 40px;
-    left: 282px;
-    top: 1304px;
+    left: 5vw;
+    top: 10vw;
 }
 
 .leftarrow-container{
@@ -386,8 +383,8 @@ li a{
     position: absolute;
     width: 541px;
     height: 279px;
-    left: 721px;
-    top: 1317px;
+    left: 42vw;
+    top: 5vw;
   }
   
 .review-box.active {
@@ -400,8 +397,8 @@ li a{
     position: absolute;
     width: 541px;
     height: 279px;
-    left: 661px;
-    top: 1250px;
+    left: 35vw;
+    top: 0vw;
 }
 
 .Client1{
@@ -490,15 +487,17 @@ li a{
     position: absolute;
     width: 1000px;
     height: 150px;
-    left: 200px;
-    top: 1750px;
+    left: 50%;
+    transform: translateX(-50%);
+    top: 126vw;
 }
 
 .SponsorTitle{
     position: absolute;
     width: 458px;
     height: 72px;
-    left: 300px;
+    left: 50%;
+    transform: translateX(-50%);
     top: 0px;
 
     font-family: 'Poppins';
@@ -517,7 +516,7 @@ li a{
     width: 1000px;
     height: 150px;
     left: 0px;
-    top: 150px;
+    top: 15vw;
 
     filter: drop-shadow(0px 4px 4px rgba(255, 255, 255, 0.25));
     background-color: rgba(0, 0, 0, 0.849);

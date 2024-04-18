@@ -6,8 +6,9 @@ session_start();
 <head>
     <title>Accueil</title>
     <link rel="stylesheet" type="text/css" href="style/style_accueil.css">
-    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@800&family=Teko:wght@300;600&display=swap" rel="stylesheet">
 </head>
+<link href="https://fonts.googleapis.com/css2?family=Poppins:wght@800&family=Teko:wght@300;600&display=swap" rel="stylesheet">
+<link href="https://fonts.googleapis.com/css2?family=Volkhov:ital,wght@0,400;0,700;1,400;1,700&display=swap" rel="stylesheet">
 <body>
     <img class="background" src="image/alexander-andrews-fsH1KjbdjE8-unsplash 1.png" alt="Background">
     <section class="filter"></section>
@@ -33,7 +34,7 @@ session_start();
         <div>Simulations de routage avec NetVision<br>
             NetVision est l’outil le plus <span class ="Description-highlight">performant</span> de sa  <span class ="Description-highlight">génération<span></div>
     </section>
-    <section>
+    <section class="preview">
         <img class="image1" src="image/nasa-Q1p7bh3SHj8-unsplash 1.png" alt="Image1">  
         <div class="Card1">
         </div>
@@ -42,17 +43,6 @@ session_start();
         </div>
         <div class="Card3">
 
-        </div>
-        <div>
-            <?php if (isset($_SESSION['loggedin']) && $_SESSION['loggedin'] == true): ?>
-                <a href="Accueil_Utilisateur.php">
-                    <button class="Decouvrir">Découvrir Maintenant !</button>
-                </a>
-            <?php else: ?>
-                <a href="Connexion.php">
-                    <button class="Decouvrir">Découvrir Maintenant !</button>
-                </a>
-            <?php endif; ?>
         </div>
 
     </section>
@@ -73,18 +63,20 @@ session_start();
             SUPPORT CLIENT</span><br>
             7j/7 24h/24
         </div>
-        <?php if (isset($_SESSION['loggedin']) && $_SESSION['loggedin'] == true): ?>
+        <div>
+            <?php if (isset($_SESSION['loggedin']) && $_SESSION['loggedin'] == true): ?>
                 <a href="Accueil_Utilisateur.php">
-                    <button class="Commencer">Commencer à simuler</button>
+                    <button class="Decouvrir">Découvrir Maintenant !</button>
                 </a>
             <?php else: ?>
                 <a href="Connexion.php">
-                    <button class="Commencer">Commencer à simuler</button>
+                    <button class="Decouvrir">Découvrir Maintenant !</button>
                 </a>
             <?php endif; ?>
+        </div>
         
     </section>
-    <section id="reviews">
+    <section class="reviews">
         <img class="image2" src="image/jj-ying-8bghKxNU1j0-unsplash 1.png" alt="Image2">
         <div class="textSatisfait">
             Des utilisateurs satisfaits
@@ -96,6 +88,20 @@ session_start();
         <button id="next-arrow" class="rightarrow-container">
             <img class="rightarrow" src="image/rightArrow.png" alt="rightarrow">
         </button>
+        <section class="review-box active" id="Client1">
+            <div class="Client1-Box"></div>
+            <div class="Client1-Name">Ashraf Belhiss</div>
+            <div class="Client1-Location">Toulouse, France</div>
+            <div class="Client1-Text">C’est l’application teh les fou wallah</div>
+            <img class="Client1-Image" src="image/1698328915992.jpg" alt="Client1">
+        </section>
+        <section class="review-box" id="Client2">
+            <div class="Client1-Box"></div>
+            <div class="Client1-Name">André Aoun</div>
+            <div class="Client1-Location">Toulouse, France</div>
+            <div class="Client1-Text">Ce projet mérite un 20/20</div>
+            <img class="Client1-Image" src="image/1698328915992.jpg" alt="Client1">
+        </section>
 
         </section>
     </section>
@@ -121,20 +127,7 @@ session_start();
         });
     </script>
 
-    <section class="review-box active" id="Client1">
-        <div class="Client1-Box"></div>
-        <div class="Client1-Name">Ashraf Belhiss</div>
-        <div class="Client1-Location">Toulouse, France</div>
-        <div class="Client1-Text">C’est l’application teh les fou wallah</div>
-        <img class="Client1-Image" src="image/1698328915992.jpg" alt="Client1">
-    </section>
-    <section class="review-box" id="Client2">
-        <div class="Client1-Box"></div>
-        <div class="Client1-Name">André Aoun</div>
-        <div class="Client1-Location">Toulouse, France</div>
-        <div class="Client1-Text">Ce projet mérite un 20/20</div>
-        <img class="Client1-Image" src="image/1698328915992.jpg" alt="Client1">
-    </section>
+    
     
     <section class="Sponsors">
         <div class="SponsorTitle">Nos collaborateurs</div>
