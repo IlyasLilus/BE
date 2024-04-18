@@ -141,7 +141,7 @@ session_start();
     </section>
     
     <section class="Sponsors">
-        <div class="SponsorTitle">Nos collaborateur</div>
+        <div class="SponsorTitle">Nos collaborateurs</div>
         <img class="SponsorImage" src="image/sponsors.png" alt="Sponsor1">
     </section>
     
