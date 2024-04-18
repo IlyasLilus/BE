@@ -1,0 +1,207 @@
+* {
+    margin: 0;
+    padding: 0;
+    font-family: sans-serif;
+    text-decoration: none;
+    list-style: none;
+    letter-spacing: 1px;
+}
+body{
+    background-image: url("background.png");
+   
+}
+.header{
+    height: 50px;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 30px 10%;
+    background-color: black;
+    height: 30px;
+    
+}
+.cont-header{
+    display: flex;
+}
+
+.logo{
+    width:80px;
+    height: 70px;
+    position:relative;
+    right:440px;
+
+}
+.cont-header a{
+    color: white;    
+    padding: 10px;
+    font-size: 22px;
+    font-weight: bold;
+    margin-bottom: 0px;
+}
+.commencer a{
+    background-color:rgb(232, 7, 146);
+    border-radius: 30px;
+    margin-left: 15px;  
+}
+.connexion a{
+    background-color: white;
+    color:black;
+    border-radius: 30px;
+}
+button{
+    background: none;
+    border: none;
+}
+.logo:hover{
+    transform: rotate(360deg);
+    transition: 1s;
+    color: (232, 7, 146);
+}
+
+nav{
+
+    margin-right: -10%;
+}
+nav li{
+    display: inline-block;
+    padding-right:40px;
+}
+
+li a{
+    font-weight: bold;
+    font-size: 22px;
+    color: white;
+}
+
+.go a:hover {
+    cursor: pointer;
+    color: rgb(232, 7, 146);
+    transition: 0.5s;
+}
+
+
+
+.title{
+    color: white;
+    text-align: center;
+    margin: 30px;
+    font-family: 'Poppins', sans-serif;
+    font-weight: bold;
+    font-size: 50px;
+}
+.title2{
+    color: rgb(232, 7, 146);
+    text-align: center;
+    font-size: 50px;
+    margin-bottom: 20px  ;
+}
+
+input[type="date"]{
+    color: gray;
+}
+.container {
+    border: 2px solid white;
+    width: 40%; 
+    margin: 0 auto; 
+    height: auto; 
+    box-shadow: 5px 5px 20px gray;
+    border-radius: 40px;
+    padding: 20px; 
+    box-sizing: border-box;
+    
+      
+ }
+ 
+ input[type="text"],
+ input[type="email"],
+ input[type="password"],
+ input[type="date"] {
+     width: 70%; /* Utilisez 70% pour prendre toute la largeur du conteneur */
+     padding: 10px;
+     font-size: 1.2rem;
+     margin: 10px 0;
+     margin-left: 15%;
+     color: black;
+     border-radius: 10px;
+ }
+  
+
+
+input:focus{
+    border: none;
+    outline: none;
+    box-shadow: 5px  2px 10px rgb(232, 7, 146);
+    transition: 0.4s;
+}
+.check{
+    left: 0;
+}
+#publicite {
+  margin-left: 25%;
+  margin-bottom: 20px;
+  position: relative;
+  right: 10%;
+  
+}
+#publicite label{
+    color: white;
+}
+.submit{
+    position: relative;
+    padding: 6px;
+    left:33%;
+    width: 35%;
+    color: white;
+    font-weight: bold;
+    font-size: 20px;
+    border: none;
+    border-radius: 20px;
+   background-color:rgb(232, 7, 146);
+   margin-top: 18px;
+}
+.submit:hover{
+    color: black;
+    transition: 0.6s;
+    cursor: pointer;
+}
+.membre{
+    text-align: center;
+    margin-bottom: 10px;
+    color: white;
+}
+.membre a{
+    font-weight: bold;
+    color: white;
+}
+.membre a:hover{
+    color:rgb(232, 7, 146);;
+    transition: 0.6s;
+}
+
+footer{
+    /* position: absolute;
+    bottom: 5%; */
+    text-align: center;
+    color: white;
+    width: 800px;
+    margin-left: auto;
+    margin-right: auto;
+    position: relative;
+    top: 200px;
+}
+.success{
+    color: greenyellow;
+    position: absolute;
+    font-weight: bold;
+    font-size: 18px;
+    top: 63%;
+    right: 42%;
+}
+.erreur{
+    color: red;
+    position: absolute;
+    font-weight: bold;
+    font-size: 18px;
+    top: 66%;
+    right: 45%;
+}
