@@ -11,26 +11,25 @@ $port = '5432';
 $dsn = "pgsql:host=$host;dbname=$db;port=$port;user=$user;password=$pass";
 $pdo = new PDO($dsn, $user, $pass);
 
-$sql = "SELECT userrole FROM Utilisateur WHERE pseudonyme = :pseudonyme";
+$sql = "SELECT Userrole FROM Utilisateur WHERE pseudonyme = :pseudonyme";
 $stmt = $pdo->prepare($sql);
 $stmt->execute(['pseudonyme' => $id_utilisateur]);
 $role = $stmt->fetchColumn();
 
 $projets = [];
 $tickets = [];
-if ($role == 'utilisateur') {
-    $sql = "SELECT fichierProjet.miyaou FROM Projet 
-            JOIN posseder ON Projet.idprojet = posseder.projet_id 
-            WHERE posseder.utilisateur_id = :id";
+if ($role == 'Userrole') {
+    $sql = "SELECT fichierProjet_miyaou 
+            FROM Projet P, Utilisateur U
+            WHERE P.Pseudonyme = U.Pseudonyme";
     $stmt = $pdo->prepare($sql);
     $stmt->execute(['id' => $id_utilisateur]);
     $projets = $stmt->fetchAll(PDO::FETCH_ASSOC);
 }
 
 if ($role == 'administrateur') {
-    $sql = "SELECT idTicket, RaisonTicket, dateTicket FROM TicketSupport 
-            JOIN traiter ON TicketSupport.id = traiter.ticket_id 
-            WHERE traiter.administrateur_id = :id";
+    $sql = "SELECT idTicket, RaisonTicket, dateTicket FROM TicketSupport T, Utilisateur U
+            WHERE T.Pseudonyme = U.Pseudonyme";
     $stmt = $pdo->prepare($sql);
     $stmt->execute(['pseudonyme' => $id_utilisateur]);
     $tickets = $stmt->fetchAll(PDO::FETCH_ASSOC);
@@ -63,7 +62,7 @@ if ($role == 'administrateur') {
         <div class="Bienvenue-container">
             <div>Bienvenue dans <span>votre<br>espace !</span></div>
         </div>
-    </section>   
+    </section>
     <section class="Projets">
         <div class="Projets-container">
             <div class="Projets-title">Mes Projets</div>
