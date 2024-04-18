@@ -28,7 +28,8 @@ if ($role == 'Userrole') {
 }
 
 if ($role == 'administrateur') {
-    $sql = "SELECT idTicket, RaisonTicket, dateTicket FROM TicketSupport T, Utilisateur U
+    $sql = "SELECT idTicket, RaisonTicket, dateTicket 
+            FROM TicketSupport T, Utilisateur U
             WHERE T.Pseudonyme = U.Pseudonyme";
     $stmt = $pdo->prepare($sql);
     $stmt->execute(['pseudonyme' => $id_utilisateur]);
