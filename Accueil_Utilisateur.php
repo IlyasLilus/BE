@@ -18,16 +18,16 @@ $role = $stmt->fetchColumn();
 
 $projets = [];
 $tickets = [];
-if ($role == 'Userrole') {
+if ($role == 'User') {
     $sql = "SELECT fichierProjet_miyaou 
-            FROM Projet P, Utilisateur U
-            WHERE P.Pseudonyme = U.Pseudonyme";
+            FROM Projet P
+            WHERE P.Pseudonyme = :pseudonyme";
     $stmt = $pdo->prepare($sql);
-    $stmt->execute(['id' => $id_utilisateur]);
+    $stmt->execute(['pseudonyme' => $id_utilisateur]);
     $projets = $stmt->fetchAll(PDO::FETCH_ASSOC);
 }
 
-if ($role == 'administrateur') {
+if ($role == 'Admin') {
     $sql = "SELECT idTicket, RaisonTicket, dateTicket 
             FROM TicketSupport T, Utilisateur U
             WHERE T.Pseudonyme = U.Pseudonyme";
@@ -71,7 +71,7 @@ if ($role == 'administrateur') {
                 <?php foreach ($projets as $projet): ?>
                     <div class="Projets-content-container">
                         <div class="Projets-content-container-title">Projet :</div>
-                        <div class="Projets-content-container-description"><?= $projet['fichierProjet.miyaou'] ?></div>
+                        <div class="Projets-content-container-description"><?= $projet['fichierprojet_miyaou'] ?></div>
                         <div class="Projets-content-container-button-acceder"><button>Accéder</button></div>
                         <div class="Projets-content-container-button-supprimer"><button>Supprimer</button></div>
                     </div>
