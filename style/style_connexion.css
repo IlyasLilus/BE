@@ -28,7 +28,7 @@ body{
     width:80px;
     height: 70px;
     position:relative;
-    right:212px;
+    right:540px;
 
 }
 .cont-header a{
@@ -125,7 +125,7 @@ li a{
  }
  
 
- input[type="email"],
+ input[type="text"],
  input[type="password"] {
      width: 70%; /* Utilisez 100% pour prendre toute la largeur du conteneur */
      padding: 10px;
@@ -202,4 +202,12 @@ footer{
 }
 .footer p,h3{
     color: white;
+}
+.erreur{
+    color: red;
+    position: absolute;
+    font-weight: bold;
+    font-size: 18px;
+    top: 55%;
+    right: 43%;
 }

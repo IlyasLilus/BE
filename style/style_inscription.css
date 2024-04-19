@@ -8,6 +8,7 @@
 }
 body{
     background-image: url("../image/background.png");
+   
 }
 .header{
     height: 50px;
@@ -27,7 +28,7 @@ body{
     width:80px;
     height: 70px;
     position:relative;
-    right:212px;
+    right:540px;
 
 }
 .cont-header a{
@@ -193,7 +194,7 @@ footer{
     position: absolute;
     font-weight: bold;
     font-size: 18px;
-    top: 63%;
+    top: 68%;
     right: 42%;
 }
 .erreur{

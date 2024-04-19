@@ -11,22 +11,18 @@
 </head>
 
 <body>
-    <header class="header">
+<header class="header">
             <nav>
                 <ul>
-                    <li class="go"><a href="Accueil.php">Accueil</a></li>
-                    <li class="go"><a href="Contact.php">Support</a></li>
-                    <li class="go"><a href="About.php">About</a></li>
+                    <li class="go"><a href="">Accueil</a></li>
+                    <li class="go"><a href="">Support</a></li>
+                    <li class="go"><a href="">About</a></li>
                 </ul>
             </nav>
         <div class="cont-header">
-            <div><a href="#home"><img class="logo" src="image/netvision.png" alt=""></a></div>
-            <?php if (isset($_SESSION['loggedin']) && $_SESSION['loggedin'] == true): ?>
-                    <button class="commencer"><a href="Acceuil_Utilisateur.php" >Mon compte</a></button>
-                <?php else: ?>
-                    <button class="connexion"><a href="Connexion.php" >Connexion</a></button>
-                    <button class="commencer"><a href="Inscription.php" >S'inscrire</a></button>
-            <?php endif; ?> 
+            <div href=""><a href="#home"><img class="logo" src="image/netvision.png" alt=""></a></div>
+            <button class="connexion"><a href="Connexion.php" >Connexion</a></button>
+            <button class="commencer"><a href="Inscription.php" >Commencer</a></button>
         </div>
     </header>
     <section id="Section1">
