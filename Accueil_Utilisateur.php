@@ -61,13 +61,15 @@ if ($role == 'Admin') {
                     <button class="connexion"><a href="Connexion.php" >Connexion</a></button>
                     <button class="commencer"><a href="Inscription.php" >S'inscrire</a></button>
             <?php endif; ?> 
-        </div>
+            </div>
+    </section>
     </header>
     <section class="Bienvenue">
         <div class="Bienvenue-container">
             <div>Bienvenue dans <span>votre<br>espace !</span></div>
         </div>
     </section>
+    <?php if ($role == 'utilisateur'): ?>
     <section class="Projets">
         <div class="Projets-container">
             <div class="Projets-title">Mes Projets</div>
@@ -86,6 +88,9 @@ if ($role == 'Admin') {
             </div>
         </div>
     </section> 
+    <?php endif; ?>
+
+    <?php if ($role == 'administrateur'): ?>
     <section class="Tickets">
         <div class="Tickets-container">
             <div class="Tickets-title">Tickets</div>
@@ -101,10 +106,12 @@ if ($role == 'Admin') {
             </div>
         </div>
     </section>
+    <?php endif; ?>
     <footer>
         <section class="footer-container">
             <div class="footer-content">
                 <div>Copyright NetVision - Mention légal -Politique de confidentialité</div>
             </div>
         </section>
-    </footer>  
+    </footer>
+</body>

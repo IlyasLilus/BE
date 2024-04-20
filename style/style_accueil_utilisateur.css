@@ -206,6 +206,69 @@ li a{
     width: 200px;
 }
 
+.Tickets {
+    display: flex;
+    width: 100%;
+    margin-top: 150px;
+    box-sizing: border-box;
+    justify-content: center;
+}
+
+.Tickets-container {
+    display: flex;
+    background-color: black;
+    width: 75%;
+    border-radius: 40px;
+    opacity:75%;
+    flex-direction: column;
+    align-items: center;
+    height: 70vh;
+}
+
+.Tickets-title {
+    font-size: 50px;
+    font-weight: bold;
+    margin-bottom: 20px;
+}
+
+.Tickets-content {
+    display: flex;
+    margin-top: 100px;
+    flex-direction: column;
+    gap: 20px;
+}
+
+.Tickets-content-container {
+    display: flex;
+    flex-direction: row;
+    width: 50vw;
+    justify-content: space-around;
+}
+
+.Tickets-content-container-title {
+    font-size: 20px;
+    color:#B557FF;
+    font-weight:bolder;
+}
+
+.Tickets-content-container-description {
+    margin-top: 10px;
+    margin-bottom: 20px;
+}
+
+.Tickets-content-container-button {
+    align-self: flex-end;
+}
+
+.Tickets-content-container-button-traiter button {
+    padding: 10px 20px;
+    font-size: 16px;
+    border-radius: 76px;
+    color: black;
+    background: white;
+    cursor: pointer;
+}
+
 .footer-container{
     display: flex;
     position: fixed;
