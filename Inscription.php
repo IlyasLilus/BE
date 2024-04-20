@@ -55,8 +55,8 @@ if (isset($_POST["submit"])) {
     <header class="header" id="header">
         <nav>
             <ul>
-                <li class="go"><a href="">Accueil</a></li>
-                <li class="go"><a href="Connexion.php">Support</a></li>
+                <li class="go"><a href="Accueil.php">Accueil</a></li>
+                <li class="go"><a href="Contact.php">Support</a></li>
                 <li class="go"><a href="">About</a></li>
             </ul>
         </nav>
