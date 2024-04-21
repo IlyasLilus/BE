@@ -55,8 +55,8 @@ if (isset($_POST["submit"])) {
     <header class="header" id="header">
         <nav>
             <ul>
-                <li class="go"><a href="">Accueil</a></li>
-                <li class="go"><a href="Connexion.php">Support</a></li>
+                <li class="go"><a href="Accueil.php">Accueil</a></li>
+                <li class="go"><a href="Contact.php">Support</a></li>
                 <li class="go"><a href="">About</a></li>
             </ul>
         </nav>
@@ -85,10 +85,7 @@ if (isset($_POST["submit"])) {
                     <input class="password" placeholder="Mot de passe" name="password1" type="password" autocomplete="current-password" required>
                     <input type="password" name="password2" placeholder="confirmer votre mot de passe" name="passc" required>
                 </div>
-                <div id="publicite">
-                    <input type="checkbox" name="check">
-                    <label for="check">J’accepte de recevoir des mails commerciaux et publicitaires de la part de FootGenius</label>
-                </div>
+               
                 <p class="membre">Déjà membre? <a class="connect" href="">Connectez Vous</a></p>
                 <input type="submit" class="submit" name="submit" value="S'inscrire">
             </form>
