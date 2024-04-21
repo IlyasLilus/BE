@@ -12,16 +12,18 @@
             width: 50px;
             height: 50px;
             margin: 10px;
-            border: 1px solid black;
         }
         #pc {
-            background-color: #f00;
+            background-image: url("image/desktop-computer.svg");
+            background-size: cover;
         }
         #router {
-            background-color: #0f0;
+            background-image: url("image/cisco-router-icon.webp");
+            background-size:cover
         }
         #wire {
-            background-color: #00f;
+            background-image: url("image/cable.svg");
+            background-size: cover;
         }
         #context-menu {
             display: none;
@@ -35,6 +37,10 @@
             width: 100%;
             padding: 5px;
         }
+
+        .draggable.clone {
+            background-color: #ccc;
+        }
     </style>
     <script src="https://cdn.jsdelivr.net/npm/interactjs@1.10.11/dist/interact.min.js"></script>
 </head>
@@ -47,19 +53,37 @@
 </div>
 
 <div id="context-menu">
+    <button id="configurer">Configurer...</button>
     <button id="delete">Supprimer</button>
+    <button id="cloner">Cloner</button>
 </div>
 
 <script>
     const contextMenu = document.getElementById('context-menu');
     const deleteButton = document.getElementById('delete');
+    const clonerButton = document.getElementById('cloner');
     let selectedElement = null;
 
     interact('.draggable')
         .draggable({
             inertia: true,
             autoScroll: true,
-            onmove: dragMoveListener
+            onmove: dragMoveListener,
+            onend: function (event) {
+                if (!event.target.classList.contains('clone')) {
+                    const clone = event.target.cloneNode();
+                    clone.classList.add('clone');
+                    clone.style.transform = 'none';
+                    document.body.appendChild(clone);
+                    interact(clone)
+                        .draggable({
+                            inertia: true,
+                            autoScroll: true,
+                            onmove: dragMoveListener
+                        });
+                    event.target.parentNode.insertBefore(clone, event.target.nextSibling);
+                }
+            }
         })
         .on('doubletap', function (event) {
             selectedElement = event.target;
@@ -68,11 +92,27 @@
             contextMenu.style.top = `${event.pageY}px`;
             event.preventDefault();
         });
-
+    
     deleteButton.addEventListener('click', function () {
         selectedElement.style.transform = 'none';
-        selectedElement.setAttribute('data-x', 0);
-        selectedElement.setAttribute('data-y', 0);
+        selectedElement.parentNode.removeChild(selectedElement);
+        contextMenu.style.display = 'none';
+    });
+
+    clonerButton.addEventListener('click', function () {
+        const clone = selectedElement.cloneNode();
+        clone.classList.add('clone');
+        const x = selectedElement.getAttribute('data-x') || 0;
+        const y = selectedElement.getAttribute('data-y') || 0;
+        clone.style.transform = `translate(${x}px, ${y}px)`;
+        document.body.appendChild(clone);
+        interact(clone)
+            .draggable({
+                inertia: true,
+                autoScroll: true,
+                onmove: dragMoveListener
+            });
+        selectedElement.parentNode.insertBefore(clone, selectedElement.nextSibling);
         contextMenu.style.display = 'none';
     });
 
