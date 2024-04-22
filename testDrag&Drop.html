@@ -3,7 +3,7 @@
 <head>
     <style>
         #drag-items {
-            position: absolute;
+            position:absolute;
             bottom: 0;
             left: 0;
             display: flex;
@@ -39,7 +39,7 @@
         }
 
         .draggable.clone {
-            background-color: #ccc;
+            background-color: #ffffff;
         }
 
         #canvas {
@@ -57,11 +57,11 @@
 </head>
 <body>
 
-<div id="drag-items">
+<section id="drag-items">
     <div id="pc" class="draggable"></div>
     <div id="router" class="draggable"></div>
     <div id="wire" class="draggable"></div>
-</div>
+</section>
 
 <canvas id="canvas"></canvas>
 
@@ -138,12 +138,13 @@
         document.getElementById('drag-items').appendChild(clone);
         interact(clone)
             .draggable({
-                inertia: true,
-                autoScroll: true,
-                onmove: dragMoveListener
+            inertia: true,
+            autoScroll: true,
+            onmove: dragMoveListener
             });
         selectedElement.parentNode.removeChild(selectedElement);
         contextMenu.style.display = 'none';
+        connexions = connexions.filter(connection => connection.start !== selectedElement && connection.end !== selectedElement);
     });
 
     clonerButton.addEventListener('click', function () {
@@ -173,7 +174,21 @@
 
         target.setAttribute('data-x', x);
         target.setAttribute('data-y', y);
-    }
+
+        
+        for (let connection of connexions) {
+            if (connection.start === target || connection.end === target) {
+                ctx.clearRect(0, 0, canvas.width, canvas.height);
+                const rect1 = connection.start.getBoundingClientRect();
+                const rect2 = connection.end.getBoundingClientRect();
+                ctx.beginPath();
+                ctx.moveTo(rect1.left + rect1.width / 2, rect1.top + rect1.height / 2);
+                ctx.lineTo(rect2.left + rect2.width / 2, rect2.top + rect2.height / 2);
+                ctx.stroke();
+            }
+        }
+       
+}
 </script>
 
 </body>
