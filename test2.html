@@ -1,0 +1,65 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <meta charset='utf-8'>
+    <meta http-equiv='X-UA-Compatible' content='IE=edge'>
+    <title>Page Title</title>
+    <meta name='viewport' content='width=device-width, initial-scale=1'>
+    <style>
+        .device {
+            width: 50px;
+            height: 30px;
+            background-color: #ccc;
+            margin: 20px;
+            display: inline-block;
+            }
+
+        .cable {
+            border: 2px solid black;
+            position: absolute;
+            visibility: hidden;
+        }
+
+    </style>
+    <script src="https://cdn.jsdelivr.net/npm/interactjs@1.10.11/dist/interact.min.js"></script>
+</head>
+<body>
+    <div class="device" id="pc"></div>
+    <div class="device" id="router"></div>
+    <div class="cable" id="cable"></div>
+    <script>
+        document.addEventListener("DOMContentLoaded", function() {
+        var cable = document.getElementById("cable");
+        var pc = document.getElementById("pc");
+        var router = document.getElementById("router");
+        var isCableConnected = false;
+
+        pc.addEventListener("click", function() {
+            if (isCableConnected) {
+            cable.style.visibility = "visible";
+            cable.style.top = pc.offsetTop + "px";
+            cable.style.left = pc.offsetLeft + pc.offsetWidth + "px";
+            }
+        });
+
+        router.addEventListener("click", function() {
+            if (isCableConnected) {
+            cable.style.visibility = "visible";
+            cable.style.top = router.offsetTop + "px";
+            cable.style.left = router.offsetLeft + "px";
+            }
+        });
+
+        cable.addEventListener("click", function() {
+            isCableConnected = !isCableConnected;
+            if (!isCableConnected) {
+            cable.style.visibility = "hidden";
+            }
+        });
+        });
+
+    </script>
+
+
+</body>
+</html>
