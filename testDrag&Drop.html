@@ -88,20 +88,29 @@
         if (event.target.id === 'wire') {
             selectedCable = event.target;
         } else if (selectedCable) {
-            selectedElements.push(event.target);
-            if (selectedElements.length === 2) {
-                const EltSelect1 = selectedElements[0].getBoundingClientRect();
-                const EltSelect2 = selectedElements[1].getBoundingClientRect();
-                ctx.beginPath();
-                ctx.moveTo(EltSelect1.left + EltSelect1.width / 2, EltSelect1.top + EltSelect1.height / 2);
-                ctx.lineTo(EltSelect2.left + EltSelect2.width / 2, EltSelect2.top + EltSelect2.height / 2);
-                ctx.stroke();
-                connexions.push({
-                    start: selectedElements[0],
-                    end: selectedElements[1]
-                });
-                selectedElements = [];
-                selectedCable = null;
+            let count = 0;
+            for (let connection of connexions) {
+                if (connection.start === event.target || connection.end === event.target) {
+                    count++;
+                }
+            }
+
+            if (count < 4) {
+                selectedElements.push(event.target);
+                if (selectedElements.length === 2) {
+                    const EltSelect1 = selectedElements[0].getBoundingClientRect();
+                    const EltSelect2 = selectedElements[1].getBoundingClientRect();
+                    ctx.beginPath();
+                    ctx.moveTo(EltSelect1.left + EltSelect1.width / 2, EltSelect1.top + EltSelect1.height / 2);
+                    ctx.lineTo(EltSelect2.left + EltSelect2.width / 2, EltSelect2.top + EltSelect2.height / 2);
+                    ctx.stroke();
+                    connexions.push({
+                        start: selectedElements[0],
+                        end: selectedElements[1]
+                    });
+                    selectedElements = [];
+                    selectedCable = null;
+                }
             }
         }
     });
