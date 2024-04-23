@@ -71,6 +71,19 @@
     <button id="cloner">Cloner</button>
 </div>
 
+<div id="config-modal" style="display: none; position: fixed; z-index: 1; left: 0; top: 0; width: 100%; height: 100%; overflow: auto; background-color: rgba(0,0,0,0.4);">
+    <div style="background-color: #fefefe; margin: 15% auto; padding: 20px; border: 1px solid #888; width: 80%;">
+        <h2 id="config-title">Configuration</h2>
+        <form id="config-form">
+            <label for="ip-address">IP Address:</label><br>
+            <input type="text" id="ip-address" name="ip-address"><br>
+            <label for="network" id="network-label" style="display: none;">Network:</label><br>
+            <input type="text" id="network" name="network" style="display: none;"><br>
+            <input type="submit" value="Submit">
+        </form>
+    </div>
+</div>
+
 <script>
     const canvas = document.getElementById('canvas');
     const ctx = canvas.getContext('2d');
@@ -79,12 +92,20 @@
     const contextMenu = document.getElementById('context-menu');
     const deleteButton = document.getElementById('delete');
     const clonerButton = document.getElementById('cloner');
+    const configButton = document.getElementById('configurer');
+    const configModal = document.getElementById('config-modal');
+    const configForm = document.getElementById('config-form');
+    const configTitle = document.getElementById('config-title');
+    const ipAddressInput = document.getElementById('ip-address');
+    const networkInput = document.getElementById('network');
+    const networkLabel = document.getElementById('network-label');
     let selectedElement = null;
     let selectedCable = null;
     let selectedElements = [];
     let connexions = [];
     let pcs = [document.getElementById('pc')];
     let routers = [document.getElementById('router')];
+    let equipmentCables = {};
 
     interact('.draggable').on('tap', function (event) {
         if (event.target.id === 'wire') {
@@ -114,6 +135,18 @@
                         start: selectedElements[0],
                         end: selectedElements[1]
                     });
+
+
+                    if (!equipmentCables[selectedElements[0].id]) {
+                        equipmentCables[selectedElements[0].id] = [];
+                    }
+                    equipmentCables[selectedElements[0].id].push(ctx);
+
+                    if (!equipmentCables[selectedElements[1].id]) {
+                        equipmentCables[selectedElements[1].id] = [];
+                    }
+                    equipmentCables[selectedElements[1].id].push(ctx);
+
                     selectedElements = [];
                     selectedCable = null;
                 }
@@ -145,22 +178,27 @@
             event.preventDefault();
         });
 
-    deleteButton.addEventListener('click', function () {
-        const clone = selectedElement.cloneNode();
-        clone.style.transform = 'none';
-        clone.setAttribute('data-x', 0);
-        clone.setAttribute('data-y', 0);
-        document.getElementById('drag-items').appendChild(clone);
-        interact(clone)
-            .draggable({
-            inertia: true,
-            autoScroll: true,
-            onmove: dragMoveListener
-            });
-        selectedElement.parentNode.removeChild(selectedElement);
-        contextMenu.style.display = 'none';
-        connexions = connexions.filter(connection => connection.start !== selectedElement && connection.end !== selectedElement);
-    });
+        deleteButton.addEventListener('click', function () {
+            if (equipmentCables[selectedElement.id]) {
+                for (let cable of equipmentCables[selectedElement.id]) {
+                    cable.clearRect(0, 0, canvas.width, canvas.height);
+                }
+            }
+            const clone = selectedElement.cloneNode();
+            clone.style.transform = 'none';
+            clone.setAttribute('data-x', 0);
+            clone.setAttribute('data-y', 0);
+            document.getElementById('drag-items').appendChild(clone);
+            interact(clone)
+                .draggable({
+                inertia: true,
+                autoScroll: true,
+                onmove: dragMoveListener
+                });
+            selectedElement.parentNode.removeChild(selectedElement);
+            contextMenu.style.display = 'none';
+            connexions = connexions.filter(connection => connection.start !== selectedElement && connection.end !== selectedElement);
+        });
 
     clonerButton.addEventListener('click', function () {
         const clone = selectedElement.cloneNode();
@@ -209,7 +247,24 @@
             }
         }
        
-}
+    configButton.addEventListener('click', function () {
+        if (selectedElement.id === 'pc') {
+            configTitle.textContent = 'PC Configuration';
+            networkInput.style.display = 'none';
+            networkLabel.style.display = 'none';
+        } else if (selectedElement.id === 'router') {
+            configTitle.textContent = 'Router Configuration';
+            networkInput.style.display = 'block';
+            networkLabel.style.display = 'block';
+        }
+        configModal.style.display = 'block';
+    });
+
+    configForm.addEventListener('submit', function (event) {
+        event.preventDefault();
+        configModal.style.display = 'none';
+    });
+    }
 </script>
 
 </body>
