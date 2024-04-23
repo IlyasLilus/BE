@@ -88,6 +88,11 @@
         if (event.target.id === 'wire') {
             selectedCable = event.target;
         } else if (selectedCable) {
+            // If the selected element is a PC and the previously selected element is also a PC, return
+            if (event.target.id === 'pc' && selectedElements.length > 0 && selectedElements[0].id === 'pc') {
+                return;
+            }
+
             let count = 0;
             for (let connection of connexions) {
                 if (connection.start === event.target || connection.end === event.target) {
