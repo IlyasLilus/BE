@@ -54,40 +54,98 @@
         
     </style>
     <script src="https://cdn.jsdelivr.net/npm/interactjs@1.10.11/dist/interact.min.js"></script>
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;500;600;700&display=swap" rel="stylesheet">
 </head>
 <body>
 
 <section id="drag-items">
+    <div id="wire" class="draggable"></div>
     <div id="pc" class="draggable"></div>
     <div id="router" class="draggable"></div>
-    <div id="wire" class="draggable"></div>
 </section>
 
 <canvas id="canvas"></canvas>
 
 <div id="context-menu">
     <button id="configurer">Configurer...</button>
-    <button id="delete">Supprimer</button>
+    <button id="supprimer">Supprimer</button>
     <button id="cloner">Cloner</button>
+    <button id="fermer">Fermer</button>
 </div>
 
-<script>
-    const canvas = document.getElementById('canvas');
-    const ctx = canvas.getContext('2d');
-    canvas.width = window.innerWidth;
-    canvas.height = window.innerHeight;
-    const contextMenu = document.getElementById('context-menu');
-    const deleteButton = document.getElementById('delete');
-    const clonerButton = document.getElementById('cloner');
-    let selectedElement = null;
-    let selectedCable = null;
-    let selectedElements = [];
-    let connexions = [];
+<div id="config-modal" style="display: none; position: fixed; z-index: 1; left: 0; top: 0; width: 100%; height: 100%; overflow: auto; background-color: rgba(0,0,0,0.4);">
+    <div style="background-color: #fefefe; margin: 15% auto; padding: 20px; border: 1px solid #888; width: 80%;">
+        <h2 id="config-title">Configuration</h2>
+        <form id="config-form">
+            <label for="adresse-ip">Adresse IP:</label><br>
+            <input type="text" id="adresse-ip" name="adresse-ip"><br>
+            <label for="reseau" id="reseau-label" style="display: none;">Réseau:</label><br>
+            <input type="text" id="reseau" name="reseau" style="display: none;"><br>
+            <input type="submit" value="Submit">
+            <button onclick="contextMenu.style.display = 'none';">Annuler</button>
+        </form>
+    </div>
+</div>
 
+<div id="datagramme" style="display: none; position: fixed; z-index: 1; left: 0; top: 0; width: 100%; height: 100%; overflow: auto; background-color: rgba(0,0,0,0.4);">
+    <div style="background-color: #fefefe; margin: 15% auto; padding: 20px; border: 1px solid #888; width: 80%;">
+        <h2>Configuration du datagramme</h2>
+        <form id="datagramme-form">
+            <label for="ttl">TTL:</label><br>
+            <input type="number" id="ttl" name="ttl"><br>
+            <label for="protocolee">Protocole:</label><br>
+            <input type="text" id="protocole" name="protocole"><br>
+            <label for="source">Source:</label><br>
+            <input type="text" id="source" name="source"><br>
+            <label for="destination">Destination:</label><br>
+            <input type="text" id="destination" name="destination"><br>
+            <input type="submit" value="Submit">
+            <button onclick="datagrammeFenetre.style.display = 'none'">Annuler</button>
+        </form>
+    </div>
+</div>
+
+<button id="lancer-button" style="position: absolute; top: 10px; right: 10px; background-color: #B557FF; color: white; font-family: 'Poppins', sans-serif; border-radius: 76px; border: none; padding: 10px 20px; cursor: pointer;">Lancer</button>
+
+<button id="datagramme-button" style="position: absolute; top: 60px; right: 10px; background-color: #B557FF; color: white; font-family: 'Poppins', sans-serif; border-radius: 76px; border: none; padding: 10px 20px; cursor: pointer;">Datagramme</button>
+
+<script>
+    // Récupération des éléments HTML et initialisation des variables
+    const canvas = document.getElementById('canvas');
+    const dessin = canvas.getContext('2d');
+    canvas.width = window.innerWidth; // Largeur du canvas = largeur de la fenêtre
+    canvas.height = window.innerHeight; // Hauteur du canvas = hauteur de la fenêtre
+    const contextMenu = document.getElementById('context-menu');
+    const supprimerBouton = document.getElementById('supprimer');
+    const clonerBouton = document.getElementById('cloner');
+    const fermerBouton = document.getElementById('fermer');
+    const configBouton = document.getElementById('configurer');
+    const config = document.getElementById('config-modal');
+    const configFormulaire = document.getElementById('config-form');
+    const configTitle = document.getElementById('config-title');
+    const IPInput = document.getElementById('adresse-ip');
+    const reseauInput = document.getElementById('reseau');
+    const reseauLabel = document.getElementById('reseau-label');
+    const datagrammeBouton = document.getElementById('datagramme-button');
+    const datagrammeFenetre = document.getElementById('datagramme');
+    const ddatagrammeFormulaire = document.getElementById('datagramme-form');
+    let ElementSelectionne = null;
+    let CableSelectionne = null;
+    let ElementsSelectionne = [];
+    let connexions = [];
+    let pcTableau = [document.getElementById('pc')];
+    let routeurTableau = [document.getElementById('router')];
+    let cableEtEquipement = {};
+
+    // Fonction pour dessiner les connexions lors du câblage des éléments
     interact('.draggable').on('tap', function (event) {
         if (event.target.id === 'wire') {
-            selectedCable = event.target;
-        } else if (selectedCable) {
+            CableSelectionne = event.target;
+        } else if (CableSelectionne) {
+            if (event.target.id === 'pc' && ElementsSelectionne.length > 0 && ElementsSelectionne[0].id === 'pc') {
+                return;
+            }
+
             let count = 0;
             for (let connection of connexions) {
                 if (connection.start === event.target || connection.end === event.target) {
@@ -96,71 +154,91 @@
             }
 
             if (count < 4) {
-                selectedElements.push(event.target);
-                if (selectedElements.length === 2) {
-                    const EltSelect1 = selectedElements[0].getBoundingClientRect();
-                    const EltSelect2 = selectedElements[1].getBoundingClientRect();
-                    ctx.beginPath();
-                    ctx.moveTo(EltSelect1.left + EltSelect1.width / 2, EltSelect1.top + EltSelect1.height / 2);
-                    ctx.lineTo(EltSelect2.left + EltSelect2.width / 2, EltSelect2.top + EltSelect2.height / 2);
-                    ctx.stroke();
+                // Limite de 4 connexions par élément
+                ElementsSelectionne.push(event.target);
+                if (ElementsSelectionne.length === 2) {
+                    const EltSelect1 = ElementsSelectionne[0].getBoundingClientRect();
+                    const EltSelect2 = ElementsSelectionne[1].getBoundingClientRect();
+                    dessin.beginPath();
+                    dessin.moveTo(EltSelect1.left + EltSelect1.width / 2, EltSelect1.top + EltSelect1.height / 2);
+                    dessin.lineTo(EltSelect2.left + EltSelect2.width / 2, EltSelect2.top + EltSelect2.height / 2);
+                    dessin.stroke();
                     connexions.push({
-                        start: selectedElements[0],
-                        end: selectedElements[1]
+                        start: ElementsSelectionne[0],
+                        end: ElementsSelectionne[1]
                     });
-                    selectedElements = [];
-                    selectedCable = null;
+
+                    // Ajout des éléments et du câble dans le tableau
+                    if (!cableEtEquipement[ElementsSelectionne[0].id]) {
+                        cableEtEquipement[ElementsSelectionne[0].id] = [];
+                    }
+                    cableEtEquipement[ElementsSelectionne[0].id].push(dessin);
+
+                    if (!cableEtEquipement[ElementsSelectionne[1].id]) {
+                        cableEtEquipement[ElementsSelectionne[1].id] = [];
+                    }
+                    cableEtEquipement[ElementsSelectionne[1].id].push(dessin);
+
+                    ElementsSelectionne = [];
+                    CableSelectionne = null;
                 }
             }
         }
     });
 
-    interact('#drag-items').dropzone({
-        accept: '.no-class',
-        overlap: 0.75,
-        ondrop: function (event) {
-            event.relatedTarget.style.transform = 'none';
-            event.relatedTarget.setAttribute('data-x', 0);
-            event.relatedTarget.setAttribute('data-y', 0);
-        }
-    });
-
     interact('.draggable')
+    // Fonction pour déplacer les éléments
         .draggable({
             inertia: true,
             autoScroll: true,
             onmove: dragMoveListener,
         })
         .on('doubletap', function (event) {
-            selectedElement = event.target;
+            // Affichage du menu contextuel
+            ElementSelectionne = event.target;
             contextMenu.style.display = 'block';
             contextMenu.style.left = `${event.pageX}px`;
             contextMenu.style.top = `${event.pageY}px`;
             event.preventDefault();
         });
 
-    deleteButton.addEventListener('click', function () {
-        const clone = selectedElement.cloneNode();
+    supprimerBouton.addEventListener('click', function () {
+        // Suppression de l'élément sélectionné
+        if (cableEtEquipement[ElementSelectionne.id]) {
+            // Suppression des câbles associés à l'élément
+            for (let cable of cableEtEquipement[ElementSelectionne.id]) {
+                cable.clearRect(0, 0, canvas.width, canvas.height);
+            }
+        }
+        // Réinitialisation de la position de l'élément
+        const clone = ElementSelectionne.cloneNode();
         clone.style.transform = 'none';
         clone.setAttribute('data-x', 0);
         clone.setAttribute('data-y', 0);
         document.getElementById('drag-items').appendChild(clone);
         interact(clone)
             .draggable({
-            inertia: true,
-            autoScroll: true,
-            onmove: dragMoveListener
+                inertia: true,
+                autoScroll: true,
+                onmove: dragMoveListener
             });
-        selectedElement.parentNode.removeChild(selectedElement);
+        ElementSelectionne.parentNode.removeChild(ElementSelectionne);
         contextMenu.style.display = 'none';
-        connexions = connexions.filter(connection => connection.start !== selectedElement && connection.end !== selectedElement);
+        connexions = connexions.filter(connection => connection.start !== ElementSelectionne && connection.end !== ElementSelectionne);
+        // Suppression de l'élément du tableau
+        if (ElementSelectionne.id === 'pc') {
+            pcTableau = pcTableau.filter(pc => pc !== ElementSelectionne);
+        } else if (ElementSelectionne.id === 'router') {
+            routeurTableau = routeurTableau.filter(router => router !== ElementSelectionne);
+        }
     });
 
-    clonerButton.addEventListener('click', function () {
-        const clone = selectedElement.cloneNode();
+    clonerBouton.addEventListener('click', function () {
+        // Clonage de l'élément sélectionné
+        const clone = ElementSelectionne.cloneNode();
         clone.classList.add('clone');
-        const x = selectedElement.getAttribute('data-x') || 0;
-        const y = selectedElement.getAttribute('data-y') || 0;
+        const x = ElementSelectionne.getAttribute('data-x') || 0;
+        const y = ElementSelectionne.getAttribute('data-y') || 0;
         document.body.appendChild(clone);
         interact(clone)
             .draggable({
@@ -168,11 +246,23 @@
                 autoScroll: true,
                 onmove: dragMoveListener
             });
-        selectedElement.parentNode.insertBefore(clone, selectedElement.nextSibling);
+        ElementSelectionne.parentNode.insertBefore(clone, ElementSelectionne.nextSibling);
+        contextMenu.style.display = 'none';
+    // Ajout de l'élément cloné dans le tableau
+        if (ElementSelectionne.id === 'pc') {
+            pcTableau.push(clone);
+        } else if (ElementSelectionne.id === 'router') {
+            routeurTableau.push(clone);
+        }
+    });
+
+    fermerBouton.addEventListener('click', function () {
+        // Fermeture du menu contextuel
         contextMenu.style.display = 'none';
     });
 
     function dragMoveListener (event) {
+        // Fonction pour déplacer les éléments
         var target = event.target,
             x = (parseFloat(target.getAttribute('data-x')) || 0) + event.dx,
             y = (parseFloat(target.getAttribute('data-y')) || 0) + event.dy;
@@ -186,21 +276,52 @@
 
         
         for (let connection of connexions) {
+            // Redessiner les connexions lors du déplacement des éléments
             if (connection.start === target || connection.end === target) {
-            ctx.clearRect(0, 0, canvas.width, canvas.height);
+            dessin.clearRect(0, 0, canvas.width, canvas.height);
             const rect1 = connection.start.getBoundingClientRect();
             const rect2 = connection.end.getBoundingClientRect();
-            ctx.beginPath();
-            ctx.moveTo(rect1.left + rect1.width / 2, rect1.top + rect1.height / 2);
-            ctx.lineTo(rect2.left + rect2.width / 2, rect2.top + rect2.height / 2);
-            ctx.stroke();
+            dessin.beginPath();
+            dessin.moveTo(rect1.left + rect1.width / 2, rect1.top + rect1.height / 2);
+            dessin.lineTo(rect2.left + rect2.width / 2, rect2.top + rect2.height / 2);
+            dessin.stroke();
             }
         }
-       
+
+    configBouton.addEventListener('click', function () {
+        // Affichage de la fenêtre de configuration
+        if (ElementSelectionne.id === 'pc') {
+            configTitle.textContent = 'PC Configuration';
+            reseauInput.style.display = 'none';
+            reseauLabel.style.display = 'none';
+        } else if (ElementSelectionne.id === 'router') {
+            configTitle.textContent = 'Router Configuration';
+            reseauInput.style.display = 'block';
+            reseauLabel.style.display = 'block';
+        }
+        config.style.display = 'block';
+    });
+
+    configFormulaire.addEventListener('submit', function (event) {
+        // Soumission du formulaire de configuration
+        event.preventDefault();
+        config.style.display = 'none';
+    });
+
+    datagrammeBouton.addEventListener('click', function () {
+        // Affichage de la fenêtre de configuration du datagramme
+        datagrammeFenetre.style.display = 'block';
+    });
+
+    ddatagrammeFormulaire.addEventListener('submit', function (event) {
+        // Soumission du formulaire de configuration du datagramme
+        event.preventDefault();
+        datagrammeFenetre.style.display = 'none';
+    });
 }
 </script>
-
 </body>
 </html>
 
-<!-- Dans un tableau : conserver les deux éléments et le canva. OU (favorite :) un tableau de l'élément et de tous les canvas qui lui sont associé -->
+<!-- TODO: -Voir pourquoi la fenêtre de configuration du datagramme ne s'ouvre que si on a fait des manipulations sur la page
+           -Quand deux câbles sont sur la page et qu'on en déplace un, l'autre s'efface de la page. Voir pourquoi et corriger -->
