@@ -54,7 +54,7 @@ function main($idDatagramme){
         foreach ($table as $route){
             if (ipMatch($ipDestination, $route[0])){
                 $objetActuel = get_next_objet($route,$objetActuel);
-                //Sortie LOG
+                //Sortie LOG -> BD table transporter 
                 $foundmatch = true;
                 break;
             }
