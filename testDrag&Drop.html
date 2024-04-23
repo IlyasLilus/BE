@@ -54,6 +54,7 @@
         
     </style>
     <script src="https://cdn.jsdelivr.net/npm/interactjs@1.10.11/dist/interact.min.js"></script>
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;500;600;700&display=swap" rel="stylesheet">
 </head>
 <body>
 
@@ -67,22 +68,46 @@
 
 <div id="context-menu">
     <button id="configurer">Configurer...</button>
-    <button id="delete">Supprimer</button>
+    <button id="supprimer">Supprimer</button>
     <button id="cloner">Cloner</button>
+    <button id="fermer">Fermer</button>
 </div>
 
 <div id="config-modal" style="display: none; position: fixed; z-index: 1; left: 0; top: 0; width: 100%; height: 100%; overflow: auto; background-color: rgba(0,0,0,0.4);">
     <div style="background-color: #fefefe; margin: 15% auto; padding: 20px; border: 1px solid #888; width: 80%;">
         <h2 id="config-title">Configuration</h2>
         <form id="config-form">
-            <label for="ip-address">IP Address:</label><br>
-            <input type="text" id="ip-address" name="ip-address"><br>
-            <label for="network" id="network-label" style="display: none;">Network:</label><br>
-            <input type="text" id="network" name="network" style="display: none;"><br>
+            <label for="adresse-ip">Adresse IP:</label><br>
+            <input type="text" id="adresse-ip" name="adresse-ip"><br>
+            <label for="reseau" id="reseau-label" style="display: none;">Réseau:</label><br>
+            <input type="text" id="reseau" name="reseau" style="display: none;"><br>
             <input type="submit" value="Submit">
         </form>
     </div>
 </div>
+
+<div id="datagramme" style="display: none; position: fixed; z-index: 1; left: 0; top: 0; width: 100%; height: 100%; overflow: auto; background-color: rgba(0,0,0,0.4);">
+    <div style="background-color: #fefefe; margin: 15% auto; padding: 20px; border: 1px solid #888; width: 80%;">
+        <h2>Configuration du datagramme</h2>
+        <form id="datagramme-form">
+            <label for="ttl">TTL:</label><br>
+            <input type="number" id="ttl" name="ttl"><br>
+            <label for="protocolee">Protocole:</label><br>
+            <input type="text" id="protocole" name="protocole"><br>
+            <label for="source">Source:</label><br>
+            <input type="text" id="source" name="source"><br>
+            <label for="destination">Destination:</label><br>
+            <input type="text" id="destination" name="destination"><br>
+            <input type="submit" value="Submit">
+        </form>
+    </div>
+</div>
+
+<button id="lancer-button" style="position: absolute; top: 10px; right: 10px; background-color: #B557FF; color: white; font-family: 'Poppins', sans-serif; border-radius: 76px; border: none; padding: 10px 20px; cursor: pointer;">Lancer</button>
+
+<button id="datagramme-button" style="position: absolute; top: 60px; right: 10px; background-color: #B557FF; color: white; font-family: 'Poppins', sans-serif; border-radius: 76px; border: none; padding: 10px 20px; cursor: pointer;">Datagramme</button>
+
+
 
 <script>
     const canvas = document.getElementById('canvas');
@@ -90,15 +115,19 @@
     canvas.width = window.innerWidth;
     canvas.height = window.innerHeight;
     const contextMenu = document.getElementById('context-menu');
-    const deleteButton = document.getElementById('delete');
+    const supprimerButton = document.getElementById('supprimer');
     const clonerButton = document.getElementById('cloner');
+    const fermerButton = document.getElementById('fermer');
     const configButton = document.getElementById('configurer');
     const configModal = document.getElementById('config-modal');
     const configForm = document.getElementById('config-form');
     const configTitle = document.getElementById('config-title');
-    const ipAddressInput = document.getElementById('ip-address');
-    const networkInput = document.getElementById('network');
-    const networkLabel = document.getElementById('network-label');
+    const ipAddressInput = document.getElementById('adresse-ip');
+    const reseauInput = document.getElementById('reseau');
+    const reseauLabel = document.getElementById('reseau-label');
+    const datagrammeButton = document.getElementById('datagramme-button');
+    const datagrammeModal = document.getElementById('datagramme');
+    const datagrammeForm = document.getElementById('datagramme-form');
     let selectedElement = null;
     let selectedCable = null;
     let selectedElements = [];
@@ -178,27 +207,27 @@
             event.preventDefault();
         });
 
-        deleteButton.addEventListener('click', function () {
-            if (equipmentCables[selectedElement.id]) {
-                for (let cable of equipmentCables[selectedElement.id]) {
-                    cable.clearRect(0, 0, canvas.width, canvas.height);
-                }
+    supprimerButton.addEventListener('click', function () {
+        if (equipmentCables[selectedElement.id]) {
+            for (let cable of equipmentCables[selectedElement.id]) {
+                cable.clearRect(0, 0, canvas.width, canvas.height);
             }
-            const clone = selectedElement.cloneNode();
-            clone.style.transform = 'none';
-            clone.setAttribute('data-x', 0);
-            clone.setAttribute('data-y', 0);
-            document.getElementById('drag-items').appendChild(clone);
-            interact(clone)
-                .draggable({
-                inertia: true,
-                autoScroll: true,
-                onmove: dragMoveListener
-                });
-            selectedElement.parentNode.removeChild(selectedElement);
-            contextMenu.style.display = 'none';
-            connexions = connexions.filter(connection => connection.start !== selectedElement && connection.end !== selectedElement);
-        });
+        }
+        const clone = selectedElement.cloneNode();
+        clone.style.transform = 'none';
+        clone.setAttribute('data-x', 0);
+        clone.setAttribute('data-y', 0);
+        document.getElementById('drag-items').appendChild(clone);
+        interact(clone)
+            .draggable({
+            inertia: true,
+            autoScroll: true,
+            onmove: dragMoveListener
+            });
+        selectedElement.parentNode.removeChild(selectedElement);
+        contextMenu.style.display = 'none';
+        connexions = connexions.filter(connection => connection.start !== selectedElement && connection.end !== selectedElement);
+    });
 
     clonerButton.addEventListener('click', function () {
         const clone = selectedElement.cloneNode();
@@ -220,6 +249,10 @@
         } else if (selectedElement.id === 'router') {
             routers.push(clone);
         }
+    });
+
+    fermerButton.addEventListener('click', function () {
+        contextMenu.style.display = 'none';
     });
 
     function dragMoveListener (event) {
@@ -246,16 +279,16 @@
             ctx.stroke();
             }
         }
-       
+
     configButton.addEventListener('click', function () {
         if (selectedElement.id === 'pc') {
             configTitle.textContent = 'PC Configuration';
-            networkInput.style.display = 'none';
-            networkLabel.style.display = 'none';
+            reseauInput.style.display = 'none';
+            reseauLabel.style.display = 'none';
         } else if (selectedElement.id === 'router') {
             configTitle.textContent = 'Router Configuration';
-            networkInput.style.display = 'block';
-            networkLabel.style.display = 'block';
+            reseauInput.style.display = 'block';
+            reseauLabel.style.display = 'block';
         }
         configModal.style.display = 'block';
     });
@@ -264,9 +297,17 @@
         event.preventDefault();
         configModal.style.display = 'none';
     });
-    }
-</script>
 
+    datagrammeButton.addEventListener('click', function () {
+        datagrammeModal.style.display = 'block';
+    });
+
+    datagrammeForm.addEventListener('submit', function (event) {
+        event.preventDefault();
+        datagrammeModal.style.display = 'none';
+    });
+}
+</script>
 </body>
 </html>
 
