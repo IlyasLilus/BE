@@ -83,12 +83,13 @@
     let selectedCable = null;
     let selectedElements = [];
     let connexions = [];
+    let pcs = [document.getElementById('pc')];
+    let routers = [document.getElementById('router')];
 
     interact('.draggable').on('tap', function (event) {
         if (event.target.id === 'wire') {
             selectedCable = event.target;
         } else if (selectedCable) {
-            // If the selected element is a PC and the previously selected element is also a PC, return
             if (event.target.id === 'pc' && selectedElements.length > 0 && selectedElements[0].id === 'pc') {
                 return;
             }
@@ -175,6 +176,12 @@
             });
         selectedElement.parentNode.insertBefore(clone, selectedElement.nextSibling);
         contextMenu.style.display = 'none';
+
+        if (selectedElement.id === 'pc') {
+            pcs.push(clone);
+        } else if (selectedElement.id === 'router') {
+            routers.push(clone);
+        }
     });
 
     function dragMoveListener (event) {
