@@ -6,9 +6,32 @@ $pass = '123';
 $port = '5432';
 $dsn = "pgsql:host=$host;port=$port;dbname=$db";
 
+function create_datagramme($TTL, $protocole, $ipSource, $ipDestination)
+{
+    global $dsn, $user, $pass;
 
+    try {
+        // La Création de l'objet PDO pour la connexion
+        $pdo = new PDO($dsn, $user, $pass);
+        $pdo->setAttribute(PDO::ATTR_ERRMODE, PDO::ERRMODE_EXCEPTION);
 
+        // Préparation de la requête SQL pour créer un nouveau datagramme
+        $stmt = $pdo->prepare("INSERT INTO datagramme (TTL, protocole, ipSource, ipDestination) VALUES (?, ?, ?, ?)");
 
+        // Exécution de la requête 
+        $stmt->execute([$TTL, $protocole, $ipSource, $ipDestination]);
+
+        // Récupération de l'ID du datagramme 
+        $lastId = $pdo->lastInsertId();
+        echo "Datagramme créé avec succès. ID: " . $lastId;
+    } catch (PDOException $e) {
+        die("Erreur de connexion à la base de données: " . $e->getMessage());
+    } catch (Exception $e) {
+        die("Erreur: " . $e->getMessage());
+    }
+}
+
+//-------------------------------------------------------
 function get_datagramme($idDatagramme)
 {
     global $dsn, $user, $pass;
@@ -103,59 +126,18 @@ function get_table($objetActuel)
     }
 }
 
-function get_next_objet($route,$objetActuel){
-    //TODO
-    //Utilise une route[ipDestination, nexthop, Infetrface] et l'id d'un objet pour trouver l'id de l'objet suivant
-    //verifier que les objets soient bien connectés
-}
+// Exemple d'uti
+// Exemple d'utilisation de la fonction
+// create_datagramme(20, 'UDP', '10.10.2.3', '10.10.2.5');
+$result = get_datagramme(2); 
+print_r($result);
+echo '<br>';
 
-function ipMatch($ipDestination, $route){
-    //TODO
-    //Utilise une adresse IP de destination finale et un réseau de destination contenu dans la table de routage
-    // renvoie vrai si l'adresse est dans le réseau, c'est à dire que cette route est la bonne
-}
-
-function main($idDatagramme){
-    $datagramme[] = get_datagramme($idDatagramme);
-    $TTL = $datagramme[0];
-    $protocole = $datagramme[1];
-    $ipSource = $datagramme[2];
-    $ipDestination = $datagramme[3];
-    
-    $objetActuel = get_objet($ipSource);
-    $estArrive = false;
-    $foundmatch = false;
-
-    //Boucle de parcours du chemin vers la déstination
-    while($TTL > 0 and !$estArrive){
-        $table = get_table($objetActuel);
-        foreach ($table as $route){
-            if (ipMatch($ipDestination, $route[0])){
-                $objetActuel = get_next_objet($route,$objetActuel);
-                //Sortie LOG -> BD table transporter 
-                $foundmatch = true;
-                break;
-            }
-        }
-        if (!$foundmatch){ // cas ou aucune route n'est possible
-            return "Erreur : Pas de route trouvée";
-        }else{
-            $foundmatch = false;
-        }
-
-        if ($objetActuel == $ipDestination){
-            $estArrive = true;
-        }
-        $TTL--;
+$ob=get_objet('10.10.10.5');
+print_r($ob);
+echo '<br>';
+$routes = get_table(1);
+foreach ($routes as $route) {
+    echo "Destination : " . $route[0] . ", Next Hop : " . $route[1] . ", Interface : " . $route[2] . "<br>";
     }
-
-    if ($estArrive){
-        return "Le datagramme est arrivé à destination";
-    }
-    if ($TTL == 0){
-        return "Erreur : Le datagramme a expiré";
-    }
-    return "Erreur inconnue";
-
-}
 ?>
