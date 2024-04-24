@@ -221,7 +221,6 @@
     let routeurTableau = [document.getElementById('router')];
     let cableEtEquipement = {};
 
-
     function createDraggableElement(element) {
         // Clonage de l'élément sélectionné
         const clone = element.cloneNode();
@@ -245,47 +244,6 @@
         }
 
         return clone;
-    }
-
-    function dragMoveListener (event) {
-        // Fonction pour déplacer les éléments
-        var target = event.target,
-            x = (parseFloat(target.getAttribute('data-x')) || 0) + event.dx,
-            y = (parseFloat(target.getAttribute('data-y')) || 0) + event.dy;
-
-        target.style.webkitTransform =
-        target.style.transform =
-            'translate(' + x + 'px, ' + y + 'px)';
-
-        target.setAttribute('data-x', x);
-        target.setAttribute('data-y', y);
-
-        // Supprimer les dessins liés à l'élément déplacé
-        for (let connection of connexions) {
-            if (connection.start === target || connection.end === target) {
-                const index = cableEtEquipement[connection.start.id].indexOf(dessin);
-                if (index > -1) {
-                    cableEtEquipement[connection.start.id].splice(index, 1);
-                }
-                const index2 = cableEtEquipement[connection.end.id].indexOf(dessin);
-                if (index2 > -1) {
-                    cableEtEquipement[connection.end.id].splice(index2, 1);
-                }
-            }
-        }
-
-        // Redessiner les connexions lors du déplacement des éléments
-        for (let connection of connexions) {
-            if (connection.start === target || connection.end === target) {
-                dessin.clearRect(0, 0, canvas.width, canvas.height);
-                const rect1 = connection.start.getBoundingClientRect();
-                const rect2 = connection.end.getBoundingClientRect();
-                dessin.beginPath();
-                dessin.moveTo(rect1.left + rect1.width / 2, rect1.top + rect1.height / 2);
-                dessin.lineTo(rect2.left + rect2.width / 2, rect2.top + rect2.height / 2);
-                dessin.stroke();
-            }
-        }
     }
 
     EquipementFooter.forEach(element => {
@@ -361,7 +319,6 @@
         });
 
     supprimerBouton.addEventListener('click', function () {
-        console.log("supprimerBouton");
         // Suppression de l'élément sélectionné
         if (cableEtEquipement[ElementSelectionne.id]) {
             // Suppression des câbles associés à l'élément
@@ -400,20 +357,6 @@
         target.setAttribute('data-x', x);
         target.setAttribute('data-y', y);
 
-        // Supprimer les dessins liés à l'élément déplacé
-        for (let connection of connexions) {
-            if (connection.start === target || connection.end === target) {
-                const index = cableEtEquipement[connection.start.id].indexOf(dessin);
-                if (index > -1) {
-                    cableEtEquipement[connection.start.id].splice(index, 1);
-                }
-                const index2 = cableEtEquipement[connection.end.id].indexOf(dessin);
-                if (index2 > -1) {
-                    cableEtEquipement[connection.end.id].splice(index2, 1);
-                }
-            }
-        }
-
         // Redessiner les connexions lors du déplacement des éléments
         for (let connection of connexions) {
             if (connection.start === target || connection.end === target) {
@@ -430,7 +373,6 @@
 
     configBouton.addEventListener('click', function () {
         // Affichage de la fenêtre de configuration
-        console.log("configBouton");
         if (ElementSelectionne.id === 'pc') {
             configTitle.textContent = 'PC Configuration';
             reseauInput.style.display = 'none';
@@ -459,10 +401,6 @@
         event.preventDefault();
         datagrammeFenetre.style.display = 'none';
     });
-
 </script>
 </body>
 </html>
-
-<!-- TODO: -Voir pourquoi la fenêtre de configuration du datagramme ne s'ouvre que si on a fait des manipulations sur la page
-           -Quand deux câbles sont sur la page et qu'on en déplace un, l'autre s'efface de la page. Voir pourquoi et corriger -->
