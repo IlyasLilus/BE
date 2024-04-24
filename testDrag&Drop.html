@@ -2,6 +2,74 @@
 <html>
 <head>
     <style>
+        .header {
+            height: 30px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 30px 10%;
+            background-color: black;
+        }
+        .cont-header{
+            display: flex;
+        }
+        nav{
+            margin-right: -10%;
+        }
+        nav li{
+            display: inline-block;
+            padding-right:40px;
+        }
+        li a{
+            font-weight: bold;
+            font-size: 22px;
+            color: white;
+        }
+        .logo{
+            width:80px;
+            height: 70px;
+            position:relative;
+            right:212px;
+
+        }
+        .cont-header a{
+            color: white;    
+            padding: 10px;
+            font-size: 22px;
+            font-weight: bold;
+            margin-bottom: 0px;
+        }
+        .commencer a{
+            background-color:rgb(232, 7, 146);
+            border-radius: 30px;
+            margin-left: 15px;  
+        }
+        .connexion a{
+            background-color: white;
+            color:black;
+            border-radius: 30px;
+        }
+        button{
+            background: none;
+            border: none;
+        }
+        .logo:hover{
+            transform: rotate(360deg);
+            transition: 1s;
+        }
+        .go a:hover {
+            cursor: pointer;
+            color: rgb(232, 7, 146);
+            transition: 0.5s;
+        }
+        footer{
+            display: flex;
+            height: 60px;
+            position: fixed;
+            bottom: 0;
+            left: 0;
+            width: 100%;
+        }
         #drag-items {
             position:absolute;
             bottom: 0;
@@ -18,7 +86,7 @@
             background-size: cover;
         }
         #router {
-            background-image: url("image/cisco-router-icon.webp");
+            background-image: url("image/routeur.png");
             background-size:cover
         }
         #wire {
@@ -57,19 +125,33 @@
     <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;500;600;700&display=swap" rel="stylesheet">
 </head>
 <body>
-
-<section id="drag-items">
+    <header class="header">
+        <nav>
+            <ul>
+                <li class="go"><a href="Accueil.php">Accueil</a></li>
+                <li class="go"><a href="Contact.php">Support</a></li>
+                <li class="go"><a href="About.php">About</a></li>
+            </ul>
+        </nav>
+    <div class="cont-header">
+        <div><a href="#home"><img class="logo" src="image/netvision.png" alt=""></a></div>
+                <button class="commencer"><a href="Acceuil_Utilisateur.php" >Mon compte</a></button>
+        </div>
+</section>
+</header>
+<footer>
+    <button id="datagramme-button" style="position: absolute; background-color: #B557FF; color: white; font-family: 'Poppins', sans-serif; border-radius: 76px; border: none; padding: 10px 20px; cursor: pointer; right: 120px;">Datagramme</button>
+    <button id="lancer-button" style="position: absolute; background-color: #B557FF; color: white; font-family: 'Poppins', sans-serif; border-radius: 76px; border: none; padding: 10px 20px; cursor: pointer; right: 20px;">Lancer</button>
     <div id="wire" class="draggable"></div>
     <div id="pc" class="draggable"></div>
     <div id="router" class="draggable"></div>
-</section>
+</footer>
 
 <canvas id="canvas"></canvas>
 
 <div id="context-menu">
     <button id="configurer">Configurer...</button>
     <button id="supprimer">Supprimer</button>
-    <button id="cloner">Cloner</button>
     <button id="fermer">Fermer</button>
 </div>
 
@@ -105,10 +187,6 @@
     </div>
 </div>
 
-<button id="lancer-button" style="position: absolute; top: 10px; right: 10px; background-color: #B557FF; color: white; font-family: 'Poppins', sans-serif; border-radius: 76px; border: none; padding: 10px 20px; cursor: pointer;">Lancer</button>
-
-<button id="datagramme-button" style="position: absolute; top: 60px; right: 10px; background-color: #B557FF; color: white; font-family: 'Poppins', sans-serif; border-radius: 76px; border: none; padding: 10px 20px; cursor: pointer;">Datagramme</button>
-
 <script>
     // Récupération des éléments HTML et initialisation des variables
     const canvas = document.getElementById('canvas');
@@ -129,6 +207,7 @@
     const datagrammeBouton = document.getElementById('datagramme-button');
     const datagrammeFenetre = document.getElementById('datagramme');
     const ddatagrammeFormulaire = document.getElementById('datagramme-form');
+    const EquipementFooter = document.querySelectorAll('footer > *');
     let ElementSelectionne = null;
     let CableSelectionne = null;
     let ElementsSelectionne = [];
@@ -137,6 +216,39 @@
     let routeurTableau = [document.getElementById('router')];
     let cableEtEquipement = {};
 
+
+    function createDraggableElement(element) {
+        // Clonage de l'élément sélectionné
+        const clone = element.cloneNode();
+        clone.classList.add('clone');
+        const x = element.getAttribute('data-x') || 0;
+        const y = element.getAttribute('data-y') || 0;
+        document.body.appendChild(clone);
+        interact(clone)
+            .draggable({
+                inertia: true,
+                autoScroll: true,
+                onmove: dragMoveListener
+            });
+        element.parentNode.insertBefore(clone, element.nextSibling);
+        contextMenu.style.display = 'none';
+        // Ajout de l'élément cloné dans le tableau
+        if (element.id === 'pc') {
+            pcTableau.push(clone);
+        } else if (element.id === 'router') {
+            routeurTableau.push(clone);
+        }
+
+        return clone;
+    }
+
+    EquipementFooter.forEach(element => {
+        if (element.id !== 'wire' && element.id !== 'datagramme-button' && element.id !== 'lancer-button') {
+            element.addEventListener('click', function() {
+                createDraggableElement(element);
+            });
+        }
+    });
     // Fonction pour dessiner les connexions lors du câblage des éléments
     interact('.draggable').on('tap', function (event) {
         if (event.target.id === 'wire') {
@@ -210,19 +322,9 @@
                 cable.clearRect(0, 0, canvas.width, canvas.height);
             }
         }
-        // Réinitialisation de la position de l'élément
-        const clone = ElementSelectionne.cloneNode();
-        clone.style.transform = 'none';
-        clone.setAttribute('data-x', 0);
-        clone.setAttribute('data-y', 0);
-        document.getElementById('drag-items').appendChild(clone);
-        interact(clone)
-            .draggable({
-                inertia: true,
-                autoScroll: true,
-                onmove: dragMoveListener
-            });
+        // Suppression de l'élément de l'écran
         ElementSelectionne.parentNode.removeChild(ElementSelectionne);
+        // Fermeture du menu contextuel
         contextMenu.style.display = 'none';
         connexions = connexions.filter(connection => connection.start !== ElementSelectionne && connection.end !== ElementSelectionne);
         // Suppression de l'élément du tableau
