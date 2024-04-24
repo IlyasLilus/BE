@@ -356,6 +356,7 @@
         });
 
     supprimerBouton.addEventListener('click', function () {
+        console.log("supprimerBouton");
         // Suppression de l'élément sélectionné
         if (cableEtEquipement[ElementSelectionne.id]) {
             // Suppression des câbles associés à l'élément
@@ -373,29 +374,6 @@
             pcTableau = pcTableau.filter(pc => pc !== ElementSelectionne);
         } else if (ElementSelectionne.id === 'router') {
             routeurTableau = routeurTableau.filter(router => router !== ElementSelectionne);
-        }
-    });
-
-    clonerBouton.addEventListener('click', function () {
-        // Clonage de l'élément sélectionné
-        const clone = ElementSelectionne.cloneNode();
-        clone.classList.add('clone');
-        const x = ElementSelectionne.getAttribute('data-x') || 0;
-        const y = ElementSelectionne.getAttribute('data-y') || 0;
-        document.body.appendChild(clone);
-        interact(clone)
-            .draggable({
-                inertia: true,
-                autoScroll: true,
-                onmove: dragMoveListener
-            });
-        ElementSelectionne.parentNode.insertBefore(clone, ElementSelectionne.nextSibling);
-        contextMenu.style.display = 'none';
-    // Ajout de l'élément cloné dans le tableau
-        if (ElementSelectionne.id === 'pc') {
-            pcTableau.push(clone);
-        } else if (ElementSelectionne.id === 'router') {
-            routeurTableau.push(clone);
         }
     });
 
@@ -447,6 +425,7 @@
 
     configBouton.addEventListener('click', function () {
         // Affichage de la fenêtre de configuration
+        console.log("configBouton");
         if (ElementSelectionne.id === 'pc') {
             configTitle.textContent = 'PC Configuration';
             reseauInput.style.display = 'none';
