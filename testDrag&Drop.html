@@ -85,6 +85,19 @@
             width: 50px;
             height: 50px;
             margin: 10px;
+            -webkit-user-select: none;  /* Chrome, Safari, Opera */
+            -moz-user-select: none;     /* Firefox */
+            -ms-user-select: none;      /* IE 10+ */
+            user-select: none;          /* Standard syntax */
+        }
+        .undraggable {
+            width: 50px;
+            height: 50px;
+            margin: 10px;
+            -webkit-user-select: none;  /* Chrome, Safari, Opera */
+            -moz-user-select: none;     /* Firefox */
+            -ms-user-select: none;      /* IE 10+ */
+            user-select: none;          /* Standard syntax */
         }
         #pc {
             background-image: url("image/desktop-computer.svg");
@@ -148,7 +161,7 @@
     <button id="datagramme-button" style="position: absolute; background-color: #B557FF; color: white; font-family: 'Poppins', sans-serif; border-radius: 76px; border: none; padding: 10px 20px; cursor: pointer; right: 120px;">Datagramme</button>
     <button id="lancer-button" style="position: absolute; background-color: #B557FF; color: white; font-family: 'Poppins', sans-serif; border-radius: 76px; border: none; padding: 10px 20px; cursor: pointer; right: 20px;">Lancer</button>
     <div id="wire" class="draggable"></div>
-    <div id="pc" class="draggable"></div>
+    <div id="pc" class="draggable" ></div>
     <div id="router" class="draggable"></div>
 </footer>
 
@@ -222,25 +235,34 @@
     let cableEtEquipement = {};
 
     function createDraggableElement(element) {
+
         // Clonage de l'élément sélectionné
         const clone = element.cloneNode();
         clone.classList.add('clone');
-        const x = element.getAttribute('data-x') || 0;
-        const y = element.getAttribute('data-y') || 0;
+
+        const rect = element.getBoundingClientRect(); // Obtient les dimensions et la position de l'élément
+        clone.style.position = 'absolute';
+        clone.style.left = `${rect.left}px`;
+        clone.style.top = `80%`;
+        
         document.body.appendChild(clone);
+        document.getElementById(clone).className += "draggable clone"; 
         interact(clone)
             .draggable({
                 inertia: true,
                 autoScroll: true,
                 onmove: dragMoveListener
             });
-        element.parentNode.insertBefore(clone, element.nextSibling);
+
+        
         contextMenu.style.display = 'none';
         // Ajout de l'élément cloné dans le tableau
         if (element.id === 'pc') {
             pcTableau.push(clone);
+            //add_object()
         } else if (element.id === 'router') {
             routeurTableau.push(clone);
+            //add_object()
         }
 
         return clone;
@@ -249,10 +271,13 @@
     EquipementFooter.forEach(element => {
         if (element.id !== 'wire' && element.id !== 'datagramme-button' && element.id !== 'lancer-button') {
             element.addEventListener('click', function() {
-                createDraggableElement(element);
+                clone = createDraggableElement(element);
             });
         }
     });
+
+   
+
     // Fonction pour dessiner les connexions lors du câblage des éléments
     interact('.draggable').on('tap', function (event) {
         if (event.target.id === 'wire') {
@@ -403,4 +428,4 @@
     });
 </script>
 </body>
-</html>
+</html
