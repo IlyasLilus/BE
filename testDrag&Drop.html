@@ -223,12 +223,15 @@
     console.log(pcTableau);
 
     function createDraggableElement(element) {
-        // Clonage de l'élément sélectionné
-        const clone = element.cloneNode();
+              // Clonage de l'élément sélectionné
+              const clone = element.cloneNode();
         clone.classList.add('clone');
+
+        const rect = element.getBoundingClientRect(); // Obtient les dimensions et la position de l'élément
         clone.style.position = 'absolute';
         clone.style.left = `${rect.left}px`;
         clone.style.top = `80%`;
+        
         document.body.appendChild(clone);
         interact(clone)
             .draggable({
@@ -236,13 +239,16 @@
                 autoScroll: true,
                 onmove: dragMoveListener
             });
-        element.parentNode.insertBefore(clone, element.nextSibling);
+
+        
         contextMenu.style.display = 'none';
         // Ajout de l'élément cloné dans le tableau
         if (element.id === 'pc') {
             pcTableau.push(clone);
+            //add_object()
         } else if (element.id === 'router') {
             routeurTableau.push(clone);
+            //add_object()
         }
 
         return clone;
