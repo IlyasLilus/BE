@@ -13,29 +13,40 @@ if (isset($_POST["submit"])) {
     $dsn = "pgsql:host=$host;port=$port;dbname=$db";
     $role = "user";
     try {
-        if ($password1 != $password2) {
-            echo '<p class="erreur">Mot de passe incorrect</p>';
-        } else {
-            $pdo = new PDO($dsn, $user, $pass);
-            $pdo->setAttribute(PDO::ATTR_ERRMODE, PDO::ERRMODE_EXCEPTION);
-            $sql = "INSERT INTO Utilisateur (Pseudonyme, Userpassword , adressemail ,Userrole) VALUES (?, ?, ?, ?)";
-            $stmt = $pdo->prepare($sql);
+        $pdo = new PDO($dsn, $user, $pass);
+        $pdo->setAttribute(PDO::ATTR_ERRMODE, PDO::ERRMODE_EXCEPTION);
 
-            // Exécution de la requête avec les valeurs récupérées à partir de $_POST
-            $stmt->execute([$username, $password1, $mail, $role]);
-            session_destroy();
-            echo '<p class="success">Votre compte est créé avec succès</p>';
-            echo '<script>
-                setTimeout(function(){
-                    window.location.href = "Connexion.php";
-                }, 3000);
-              </script>';
+        // Vérifier si l'email existe déjà
+        $sql_check_email = "SELECT * FROM Utilisateur WHERE adressemail = ?";
+        $stmt_check_email = $pdo->prepare($sql_check_email);
+        $stmt_check_email->execute([$mail]);
+
+        if ($stmt_check_email->rowCount() > 0) {
+            echo '<p class="erreur">Un compte avec cet email existe déjà.</p>';
+        } else {
+            if ($password1 != $password2) {
+                echo '<p class="erreur">Les mots de passe ne correspondent pas.</p>';
+            } else {
+                $sql = "INSERT INTO Utilisateur (Pseudonyme, Userpassword, adressemail, Userrole) VALUES (?, ?, ?, ?)";
+                $stmt = $pdo->prepare($sql);
+
+                // Exécution de la requête avec les valeurs récupérées à partir de $_POST
+                $stmt->execute([$username, $password1, $mail, $role]);
+                session_destroy();
+                echo '<p class="success">Votre compte est créé avec succès</p>';
+                echo '<script>
+                        setTimeout(function(){
+                            window.location.href = "Connexion.php";
+                        }, 3000);
+                      </script>';
+            }
         }
     } catch (PDOException $e) {
         echo "Erreur de connexion à la base de données : " . $e->getMessage();
     }
 }
 ?>
+
 <!DOCTYPE html>
 <html lang="en">
 
