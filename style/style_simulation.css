@@ -1,0 +1,125 @@
+body{
+    margin: 0;
+    padding: 0;
+    font-family: 'Poppins', sans-serif;
+}
+.header {
+    height: 30px;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 30px 10%;
+    background-color: black;
+}
+.cont-header{
+    display: flex;
+}
+nav li{
+    display: inline-block;
+    padding-right:40px;
+}
+li a{
+    font-weight: bold;
+    font-size: 15px;
+    color: white;
+    text-decoration: none;
+}
+.logo{
+    width:80px;
+    height: 70px;
+    position:relative;
+    right:295px;
+}
+.cont-header a{
+    color: white;    
+    padding: 10px;
+    font-size: 22px;
+    font-weight: bold;
+    margin-bottom: 0px;
+}
+.commencer a{
+    border-radius: 30px; 
+    font-size: 20px;
+    text-decoration: none;
+}
+.commencer a:hover{
+    cursor:pointer;
+    color: rgb(232, 7, 146);
+    transition: 0.5s;
+}
+.connexion a{
+    background-color: white;
+    color:black;
+    border-radius: 30px;
+}
+button{
+    background: none;
+    border: none;
+}
+.logo:hover{
+    transform: rotate(360deg);
+    transition: 1s;
+}
+.go a:hover {
+    cursor: pointer;
+    color: rgb(232, 7, 146);
+    transition: 0.5s;
+}
+footer{
+    display: flex;
+    height: 60px;
+    position: fixed;
+    bottom: 0;
+    left: 0;
+    width: 100%;
+    border: 1px solid black;
+}
+#drag-items {
+    position:absolute;
+    bottom: 0;
+    left: 0;
+    display: flex;
+}
+.draggable {
+    width: 50px;
+    height: 50px;
+    margin: 10px;
+}
+#pc {
+    background-image: url("image/desktop-computer.svg");
+    background-size: cover;
+}
+#router {
+    background-image: url("image/routeur.png");
+    background-size:cover
+}
+#wire {
+    background-image: url("image/cable.svg");
+    background-size: cover;
+}
+#context-menu {
+    display: none;
+    position: absolute;
+    width: 100px;
+    background-color: #fff;
+    border: 1px solid #ddd;
+}
+#context-menu button {
+    all: unset;
+    width: 100%;
+    padding: 5px;
+}
+
+.draggable.clone {
+    background-color: #ffffff;
+}
+
+#canvas {
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    pointer-events: none;
+    border: 1px solid black;
+}
