@@ -24,6 +24,17 @@ function del_object($dsn, $user, $pass, $idObjet){
     $conn->query($sql);
 }
 
+function edit_object($dsn, $user, $pass,$idObjet, $name, $ip, $mask){
+    $conn = new PDO($dsn, $user, $pass);
+    $sql = "UPDATE objet SET NomObjet = '$name', dateObjet = now(), IpObjet = '$ip', masqueObjet = '$mask' WHERE IdObjet = $idObjet";
+    $conn->query($sql);
+}
+function move_object($dsn, $user, $pass, $idObjet, $x, $y){
+    $conn = new PDO($dsn, $user, $pass);
+    $sql = "UPDATE objet SET xObjet = $x, yObjet = $y WHERE IdObjet = $idObjet";
+    $conn->query($sql);
+}
+
 function add_connection($dsn, $user, $pass, $idObjetA, $idObjetB, $InterfaceA, $InterfaceB){
     $conn = new PDO($dsn, $user, $pass);
     $sql = "INSERT INTO Se_connecter (IdObjetA, IdObjetB, InterfaceA, InterfaceB) 

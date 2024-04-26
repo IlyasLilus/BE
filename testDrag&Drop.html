@@ -248,10 +248,14 @@
         // Ajout de l'élément cloné dans le tableau
         if (element.id === 'pc') {
             pcTableau.push(clone);
-            //add_object()
+            //sendData($idObjet: clone.id,$name= clone.name,$ip= clone.ip,$mask = clone.mask, $x: clone.style.left, $y: clone.style.top);
+            //<php>$type = 'pc'
+            //$cloneid=add_object($dsn, $user, $pass, $name, $ip, $mask,$type ,$x, $y);</php>
         } else if (element.id === 'router') {
             routeurTableau.push(clone);
-            //add_object()
+            //sendData($idObjet: clone.id,$name= clone.name,$ip= clone.ip,$mask = clone.mask, $x: clone.style.left, $y: clone.style.top);
+            //<php>$type = 'router'
+            //$cloneid=add_object($dsn, $user, $pass, $name, $ip, $mask,$type ,$x, $y);</php>
         }
 
         return clone;
@@ -267,6 +271,9 @@
 
         target.setAttribute('data-x', x); // Mise à jour des coordonnées de l'élément
         target.setAttribute('data-y', y);
+        //mise à jours des cooordoonées dans la BD
+        //sendData($idObjet: target.id, $x: x, $y: y);
+        //<php>move_object($dsn, $user, $pass, $idObjet, $x, $y); </php>
 
         // Redessiner les connexions lors du déplacement des éléments
         for (let connection of connexions) {
@@ -342,7 +349,10 @@
                             cableEtEquipement[ElementsSelectionne[1].id] = []; 
                         }
                         cableEtEquipement[ElementsSelectionne[1].id].push(dessin); // Ajout du câble dans le tableau
-
+                        //Ajout de la connexion dans la BD
+                        //sendData($idObjetA: ElementsSelectionne[0].id, $idObjetB: ElementsSelectionne[1].id, $InterfaceA: , $InterfaceB: );
+                        //<php>add_connection($dsn, $user, $pass, $idObjetA, $idObjetB, $InterfaceA, $InterfaceB) </php>
+        
                         ElementsSelectionne = []; // Réinitialisation du tableau
                         CableSelectionne = null; // Réinitialisation du câble sélectionné
                     }
@@ -365,6 +375,9 @@
             // Suppression des câbles associés à l'élément
             for (let cable of cableEtEquipement[ElementSelectionne.id]) {
                 cable.clearRect(0, 0, canvas.width, canvas.height);
+                //Suppression de la connexion dans la BD
+                //sendData($idObjetA: ElementsSelectionne[0].id, $idObjetB: ElementsSelectionne[1].id);
+                //<php>del_connection($dsn, $user, $pass, $idObjetA, $idObjetB); </php>
             }
         }
         // Suppression de l'élément de l'écran
@@ -375,9 +388,13 @@
         // Suppression de l'élément du tableau
         if (ElementSelectionne.id === 'pc') {
             pcTableau = pcTableau.filter(pc => pc !== ElementSelectionne);
+            
         } else if (ElementSelectionne.id === 'router') {
             routeurTableau = routeurTableau.filter(router => router !== ElementSelectionne);
         }
+        //Suppression dans la BD
+        //sendData($idObjet: ElementsSelectionne.id);
+        //<php>del_object($dsn, $user, $pass, $idObjet); </php>
     }); 
 
     fermerBouton.addEventListener('click', function () {
@@ -397,12 +414,16 @@
             reseauLabel.style.display = 'block';
         }
         config.style.display = 'block';
+        
     });
 
     configFormulaire.addEventListener('submit', function (event) {
         // Soumission du formulaire de configuration
         event.preventDefault();
         config.style.display = 'none';
+        // Modification dans la BD
+        //sendData($idObjet: ElementsSelectionne.id, $name: nomInput.value, $adresseIP: IPInput.value, $reseau: reseauInput.value);
+        //edit_object($dsn, $user, $pass, $idObjet, $name, $adresseIP, $reseau);
     });
 
     datagrammeBouton.addEventListener('click', function () {
@@ -414,7 +435,25 @@
         // Soumission du formulaire de configuration du datagramme
         event.preventDefault();
         datagrammeFenetre.style.display = 'none';
+        // Envoi des données du datagramme dans la bd
+        //sendData($ttl: ttlInput.value, $protocole: protocoleInput.value, $source: sourceInput.value, $destination: destinationInput.value);
+        //<php>$id_datagram = add_datagram($dsn, $user, $pass, $ttl, $protocole, $source, $destination);</php>
     });
+
+    function sendData(data) {
+        var xhr = new XMLHttpRequest();
+        xhr.open("POST", "your-server-script.php", true);
+        xhr.setRequestHeader("Content-Type", "application/x-www-form-urlencoded");
+
+        xhr.onreadystatechange = function() {
+            if (xhr.readyState === 4 && xhr.status === 200) {
+                console.log(xhr.responseText); // Handle response from the server
+            }
+        };
+
+        xhr.send("data=" + encodeURIComponent(JSON.stringify(data)));
+    }
+
 </script>
 </body>
 </html>
