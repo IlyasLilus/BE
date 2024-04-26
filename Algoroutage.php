@@ -103,16 +103,59 @@ function get_table($objetActuel)
     }
 }
 
-function get_next_objet($route,$objetActuel){
-    //TODO
-    //Utilise une route[ipDestination, nexthop, Infetrface] et l'id d'un objet pour trouver l'id de l'objet suivant
-    //verifier que les objets soient bien connectés
+function get_next_objet($route, $objetActuel) {
+    global $pdo;
+
+    // Vérifier si l'élément $route[1] est défini
+    if(isset($route[1])) {
+        $nexthop = $route[1];  // Supposant que 'nexthop' est le deuxième élément de $route.
+
+        $query = "SELECT IdObjet FROM Objet WHERE IpObjet = :nexthop";
+        $stmt = $pdo->prepare($query);
+        $stmt->bindParam(':nexthop', $nexthop);
+        $stmt->execute();
+
+        // Vérifier les erreurs dans l'exécution de la requête SQL
+        if ($stmt->errorCode() !== '00000') {
+            $errorInfo = $stmt->errorInfo();
+            echo "Erreur SQL : " . $errorInfo[2];
+            return null;
+        }
+
+        $result = $stmt->fetch(PDO::FETCH_ASSOC);
+
+        if ($result) {
+            return $result['IdObjet'];  // Retourne l'ID de l'objet suivant si trouvé.
+        } else {
+            return null;  // Retourne null si aucun objet correspondant n'est trouvé.
+        }
+    } else {
+        // Si $route[1] n'est pas défini, retourner null
+        return null;
+    }
 }
 
 function ipMatch($ipDestination, $route){
-    //TODO
-    //Utilise une adresse IP de destination finale et un réseau de destination contenu dans la table de routage
-    // renvoie vrai si l'adresse est dans le réseau, c'est à dire que cette route est la bonne
+    // Extraire l'adresse IP et le masque de sous-réseau de la route
+    $routeParts = explode('/', $route);
+    $network = $routeParts[0];
+    $subnetMask = $routeParts[1];
+
+    // Convertir l'adresse IP de destination en binaire
+    $ipDestinationBinary = ip2long($ipDestination);
+
+    // Extraire l'adresse réseau de destination en binaire
+    $networkBinary = ip2long($network);
+
+    // Calculer le masque de sous-réseau en binaire
+    $subnetMaskBinary = ~((1 << (32 - $subnetMask)) - 1);
+
+    // Vérifier si l'adresse IP de destination est dans le réseau spécifié
+    if (($ipDestinationBinary & $subnetMaskBinary) == ($networkBinary & $subnetMaskBinary)) {
+        return true;
+    } else {
+        return false;
+    }
 }
 
 function main($idDatagramme){
