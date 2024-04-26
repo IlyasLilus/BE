@@ -22,7 +22,7 @@ if (isset($_POST['connect'])) {
         $user = $stmt->fetch(PDO::FETCH_ASSOC);
         if ($user && $password === $user['userpassword']) {
             // Redirection si le mot de passe est correct
-            header("Location: Contact.php");
+            header("Location: Accueil_Utilisateur.php");
             exit;
         } else {
             // Affichage d'un message d'erreur si le mot de passe ou le nom d'utilisateur est incorrect
