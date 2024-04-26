@@ -178,16 +178,59 @@
         }
     }
 
-    function get_next_objet($route,$objetActuel){
-        //TODO
-        //Utilise une route[ipDestination, nexthop, Infetrface] et l'id d'un objet pour trouver l'id de l'objet suivant
-        //verifier que les objets soient bien connectés
+    function get_next_objet($route, $objetActuel) {
+        global $pdo;
+    
+        // Vérifier si l'élément $route[1] est défini
+        if(isset($route[1])) {
+            $nexthop = $route[1];  // Supposant que 'nexthop' est le deuxième élément de $route.
+    
+            $query = "SELECT IdObjet FROM Objet WHERE IpObjet = :nexthop";
+            $stmt = $pdo->prepare($query);
+            $stmt->bindParam(':nexthop', $nexthop);
+            $stmt->execute();
+    
+            // Vérifier les erreurs dans l'exécution de la requête SQL
+            if ($stmt->errorCode() !== '00000') {
+                $errorInfo = $stmt->errorInfo();
+                echo "Erreur SQL : " . $errorInfo[2];
+                return null;
+            }
+    
+            $result = $stmt->fetch(PDO::FETCH_ASSOC);
+    
+            if ($result) {
+                return $result['IdObjet'];  // Retourne l'ID de l'objet suivant si trouvé.
+            } else {
+                return null;  // Retourne null si aucun objet correspondant n'est trouvé.
+            }
+        } else {
+            // Si $route[1] n'est pas défini, retourner null
+            return null;
+        }
     }
-
+    
     function ipMatch($ipDestination, $route){
-        //TODO
-        //Utilise une adresse IP de destination finale et un réseau de destination contenu dans la table de routage
-        // renvoie vrai si l'adresse est dans le réseau, c'est à dire que cette route est la bonne
+        // Extraire l'adresse IP et le masque de sous-réseau de la route
+        $routeParts = explode('/', $route);
+        $network = $routeParts[0];
+        $subnetMask = $routeParts[1];
+    
+        // Convertir l'adresse IP de destination en binaire
+        $ipDestinationBinary = ip2long($ipDestination);
+    
+        // Extraire l'adresse réseau de destination en binaire
+        $networkBinary = ip2long($network);
+    
+        // Calculer le masque de sous-réseau en binaire
+        $subnetMaskBinary = ~((1 << (32 - $subnetMask)) - 1);
+    
+        // Vérifier si l'adresse IP de destination est dans le réseau spécifié
+        if (($ipDestinationBinary & $subnetMaskBinary) == ($networkBinary & $subnetMaskBinary)) {
+            return true;
+        } else {
+            return false;
+        }
     }
 
     function main($idDatagramme){
@@ -252,12 +295,11 @@
                 <li class="go"><a href="About.php">About</a></li>
             </ul>
         </nav>
-    <div class="cont-header">
-        <div><a href="#home"><img class="logo" src="image/netvision.png" alt=""></a></div>
-                <button class="commencer"><a href="Acceuil_Utilisateur.php" >Mon compte</a></button>
+        <div class="cont-header">
+            <div><a href="#home"><img class="logo" src="image/netvision.png" alt=""></a></div>
+                    <button class="commencer"><a href="Accueil_Utilisateur.php" >Mon compte</a></button>
         </div>
-</section>
-</header>
+    </header>
 <footer>
     <button id="datagramme-button" style="position: absolute; background-color: #B557FF; color: white; font-family: 'Poppins', sans-serif; border-radius: 76px; border: none; padding: 10px 20px; cursor: pointer; right: 120px; top: 10px">Datagramme</button>
     <button id="lancer-button" style="position: absolute; background-color: #B557FF; color: white; font-family: 'Poppins', sans-serif; border-radius: 76px; border: none; padding: 10px 20px; cursor: pointer; right: 20px; top: 10px">Lancer</button>
@@ -277,7 +319,7 @@
 <div id="config-modal" style="display: none; position: fixed; z-index: 1; left: 0; top: 0; width: 100%; height: 100%; overflow: auto; background-color: rgba(0,0,0,0.4);">
     <div style="background-color: #fefefe; margin: 15% auto; padding: 20px; border: 1px solid #888; width: 80%;">
         <h2 id="config-title">Configuration</h2>
-        <form id="config-form">
+        <form action="Simulation.php" method = "POST" id="config-form">
             <label for="typeLabel">Type de l'objet:</label>
             <input type="type" id="type" name="type" style="display: none;"><br>
             <label for="nom">Nom de l'objet:</label>
@@ -289,13 +331,23 @@
             <input type="submit" value="Submit">
             <button onclick="contextMenu.style.display = 'none';">Annuler</button>
         </form>
+
+        <?php
+        if($_SERVER['REQUEST_METHOD'] == 'POST'){
+            $name = $_POST['nom'];
+            $ip = $_POST['adresse-ip'];
+            $mask = $_POST['reseau'];
+            $type = $_POST['type'];
+            edit_object($dsn, $user, $pass, $name, $ip, $mask,$type);
+        }
+        ?>
     </div>
 </div>
 
 <div id="datagramme" style="display: none; position: fixed; z-index: 1; left: 0; top: 0; width: 100%; height: 100%; overflow: auto; background-color: rgba(0,0,0,0.4);">
     <div style="background-color: #fefefe; margin: 15% auto; padding: 20px; border: 1px solid #888; width: 80%;">
         <h2>Configuration du datagramme</h2>
-        <form id="datagramme-form">
+        <form action="Simulation.php" method="POST" id="datagramme-form">
             <label for="ttl">TTL:</label><br>
             <input type="number" id="ttl" name="ttl"><br>
             <label for="protocolee">Protocole:</label><br>
@@ -307,6 +359,15 @@
             <input type="submit" value="Submit">
             <button onclick="datagrammeFenetre.style.display = 'none'">Annuler</button>
         </form>
+        <?php
+        if($_SERVER['REQUEST_METHOD'] == 'POST'){
+            $ttl = $_POST['ttl'];
+            $protocole = $_POST['protocole'];
+            $source = $_POST['source'];
+            $destination = $_POST['destination'];
+            add_datagramme($dsn, $user, $pass, $ttl, $protocole, $source, $destination);
+        }
+        ?>
     </div>
 </div>
 
@@ -339,8 +400,8 @@
     let cableEtEquipement = {};
 
     function createDraggableElement(element) {
-              // Clonage de l'élément sélectionné
-              const clone = element.cloneNode();
+        // Clonage de l'élément sélectionné
+        const clone = element.cloneNode();
         clone.classList.add('clone');
 
         const rect = element.getBoundingClientRect(); // Obtient les dimensions et la position de l'élément
@@ -360,6 +421,7 @@
         
         contextMenu.style.display = 'none';
         // Ajout de l'élément cloné dans le tableau
+        console.log(element.id);
         if (element.id === 'pc') {
             configTitle.textContent = 'Configuration PC';
             reseauInput.style.display = 'none';
@@ -380,7 +442,7 @@
             typeInput.disabled = true;
             typeInput.style.display = 'block';
         }
-        //entre le clone dans la BD !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!! IP ET MASK NON DEFINI à création
+        //Rentre le clone dans la BD !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!! IP ET MASK NON DEFINI à création
         sendData($name= clone.name, $ip= clone.ip,$mask = clone.mask, $x: clone.style.left, $y: clone.style.top, $type: typeInput.value);
         <?php
             $cloneid = add_object($dsn, $user, $pass, $name, $ip, $mask,$type ,$x, $y);
@@ -574,14 +636,6 @@
         // Soumission du formulaire de configuration du datagramme
         event.preventDefault();
         datagrammeFenetre.style.display = 'none';
-        // Envoi des données du datagramme dans la bd
-        // sendData($ttl: ttlInput.value, $protocole: protocoleInput.value, $source: sourceInput.value, $destination: destinationInput.value);
-        // <?php
-        //     $id_datagram = add_datagramme($dsn, $user, $pass, $ttl, $protocole, $source, $destination);
-        // ?>
-        // var id_bd = <?php echo json_encode($id_datagram); ?>;
-        // clone.setAttribute('id_bd', id_bd.toString());
-
     });
 
     function sendData(data) {

@@ -86,15 +86,15 @@ footer{
     margin: 10px;
 }
 #pc {
-    background-image: url("image/desktop-computer.svg");
+    background-image: url("../image/desktop-computer.svg");
     background-size: cover;
 }
 #router {
-    background-image: url("image/routeur.png");
+    background-image: url("../image/routeur.png");
     background-size:cover
 }
 #wire {
-    background-image: url("image/cable.svg");
+    background-image: url("../image/cable.svg");
     background-size: cover;
 }
 #context-menu {
