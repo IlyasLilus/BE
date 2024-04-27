@@ -333,7 +333,11 @@
         event.preventDefault();
         config.style.display = 'none';
         //Mise à jour dans la BD
-        // OU SONT LES INFOS DU FORMULAIRE AAAAAAAAAAAAAARGH
+        <?php
+        $name = $_REQUEST['nom'];
+        $IpObjet = $_REQUEST['adresse-ip'];
+        $masqueObjet = $_REQUEST['reseau'];
+        ?>
         var updateData = {idObjet: ElementSelectionne.getAttribute('id_bd'), name: document.getElementById('nom').value, ip: document.getElementById('adresse-ip').value, mask: document.getElementById('reseau').value, type: document.getElementById('type').value};
         sendData('edit_object',updateData);
     });
@@ -354,7 +358,12 @@
         event.preventDefault();
         datagrammeFenetre.style.display = 'none';
         //Mise à jour dans la BD
-        // AAAAAAAAAAAAAAAAAAAAAAAAAAARGH
+        <?php
+        $TTL = $_REQUEST['ttl'];
+        $protocole = $_REQUEST['protocolee'];
+        $SourceData = $_REQUEST['source'];
+        $Destination = $_REQUEST['destination']
+        ?>
         var datagrammeData = {ttl: document.getElementById('ttl').value, protocole: document.getElementById('protocole').value, source: document.getElementById('source').value, destination: document.getElementById('destination').value};
         var id_datagram= await sendData('add_datagramme',datagrammeData);
         
