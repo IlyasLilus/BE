@@ -1,282 +1,3 @@
-<?php
-    session_start();
-    $host = 'localhost';
-    $db = 'BE';
-    $user = 'postgres';
-    $pass = 'a';
-    $port = '5432';
-    $dsn = "pgsql:host=$host;port=$port;dbname=$db";
-
-    function add_object($dsn, $user, $pass, $name, $ip, $mask, $type, $x, $y){
-        $conn = new PDO($dsn, $user, $pass);
-        $sql = "INSERT INTO objet (typeObjet, NomObjet, xObjet, yObjet, dateObjet, IpObjet, masqueObjet) 
-                VALUES ('$type', '$name', $x, $y, now(), '$ip', '$mask') 
-                RETURNING IdObjet";
-        $result = $conn->query($sql);
-        $row = $result->fetch(PDO::FETCH_ASSOC);
-        $idObjet = $row['IdObjet'];
-        
-        return $idObjet;
-    }
-    
-    function del_object($dsn, $user, $pass, $idObjet){
-        $conn = new PDO($dsn, $user, $pass);
-        $sql = "DELETE FROM objet WHERE IdObjet = $idObjet";
-        $conn->query($sql);
-    }
-    
-    function edit_object($dsn, $user, $pass,$idObjet, $name, $ip, $mask){
-        $conn = new PDO($dsn, $user, $pass);
-        $sql = "UPDATE objet SET NomObjet = '$name', dateObjet = now(), IpObjet = '$ip', masqueObjet = '$mask' WHERE IdObjet = $idObjet";
-        $conn->query($sql);
-    }
-    function move_object($dsn, $user, $pass, $idObjet, $x, $y){
-        $conn = new PDO($dsn, $user, $pass);
-        $sql = "UPDATE objet SET xObjet = $x, yObjet = $y WHERE IdObjet = $idObjet";
-        $conn->query($sql);
-    }
-    
-    function add_connection($dsn, $user, $pass, $idObjetA, $idObjetB, $InterfaceA, $InterfaceB){
-        $conn = new PDO($dsn, $user, $pass);
-        $sql = "INSERT INTO Se_connecter (IdObjetA, IdObjetB, InterfaceA, InterfaceB) 
-                VALUES ($idObjetA, $idObjetB, $InterfaceA, $InterfaceB)";
-        $conn->query($sql);
-    
-    }
-    
-    function del_connection($dsn, $user, $pass, $idObjetA, $idObjetB){
-        $conn = new PDO($dsn, $user, $pass);
-        $sql = "DELETE FROM Se_connecter WHERE IdObjetA = $idObjetA AND IdObjetB = $idObjetB OR IdObjetA = $idObjetB AND IdObjetB = $idObjetA";
-        $conn->query($sql);
-    
-    }
-    
-    function add_route($dsn, $user, $pass, $idObjet, $Destination, $nexthop, $Interface){
-        $conn = new PDO($dsn, $user, $pass);
-        $sql = "INSERT INTO route (IdObjet, Destination, nexthop, Interface) 
-                VALUES ($idObjet, '$Destination', '$nexthop', $Interface) RETURNING IdRoute";
-        $result = $conn->query($sql);
-        $row = $result->fetch(PDO::FETCH_ASSOC);
-        $idRoute = $row['IdRoute'];
-    
-        return $idRoute;
-    }
-    
-    function del_route($dsn, $user, $pass, $idRoute){
-        $conn = new PDO($dsn, $user, $pass);
-        $sql = "DELETE FROM route WHERE IdRoute = $idRoute";
-        $conn->query($sql);
-    }
-    
-    function add_datagramme($dsn, $user, $pass, $TTL, $protocole, $SourceData, $Destination){
-        $conn = new PDO($dsn, $user, $pass);
-        $sql = "INSERT INTO datagramme (TTL, protocole, ipSource, ipDestination) 
-                VALUES ($TTL, '$protocole', '$SourceData', '$Destination') RETURNING IdDatagramme";
-        $result = $conn->query($sql);
-        $row = $result->fetch(PDO::FETCH_ASSOC);
-        $idDatagramme = $row['IdDatagramme'];
-    
-        return $idDatagramme;
-    }
-    
-    function del_datagramme($dsn, $user, $pass, $idDatagramme){
-        $conn = new PDO($dsn, $user, $pass);
-        $sql = "DELETE FROM datagramme WHERE IdDatagramme = $idDatagramme";
-        $conn->query($sql);
-    }
-
-    function get_datagramme($idDatagramme){
-        global $dsn, $user, $pass;
-
-        try {
-            // Création de l'objet PDO pour la connexion
-            $pdo = new PDO($dsn, $user, $pass);
-            $pdo->setAttribute(PDO::ATTR_ERRMODE, PDO::ERRMODE_EXCEPTION);
-
-            // Préparation de la requête SQL
-            $stmt = $pdo->prepare("SELECT TTL, protocole, ipSource, ipDestination FROM Datagramme WHERE idDatagramme = ?");
-            $stmt->execute([$idDatagramme]);
-
-            // Récupération des résultats
-            $result = $stmt->fetch(PDO::FETCH_ASSOC);
-
-            if ($result) {
-                // Retourner le datagramme 
-                return $result;
-                // return "TTL : " . $result['ttl'] . " Protocole : " . $result['protocole'] . " Ipsource : " . $result['ipsource'] . " Ipdestination : " . $result['ipdestination'];
-            } else {
-                throw new Exception("Aucun datagramme trouvé avec l'ID spécifié.");
-            }
-        } catch (PDOException $e) {
-            die("Erreur de connexion à la base de données: " . $e->getMessage());
-        } catch (Exception $e) {
-            die("Erreur: " . $e->getMessage());
-        }
-    }
-
-    function get_objet($ipSource)
-    {
-        global $dsn, $user, $pass;
-
-        try {
-            // Création de l'objet PDO pour la connexion
-            $pdo = new PDO($dsn, $user, $pass);
-            $pdo->setAttribute(PDO::ATTR_ERRMODE, PDO::ERRMODE_EXCEPTION);
-
-            // Préparation de la requête SQL pour récupérer l'objet 
-            $stmt = $pdo->prepare("SELECT * FROM Objet WHERE ipobjet = ?");
-
-            // Exécution de la requête avec l'adresse IP fournie
-            $stmt->execute([$ipSource]);
-
-            // Récupération du résultat
-            $result = $stmt->fetch(PDO::FETCH_ASSOC);
-
-            if ($result) {
-                return $result;
-                    // "ID :" . $result["idobjet"] .
-                    // " Nom: " . $result['nomobjet'] .
-                    // ", Position: (" . $result['xobjet'] . ", " . $result['yobjet'] . ")" .
-                    // ", Masque: " . $result['masqueobjet'];
-
-            } else {
-                return null; // Aucun objet trouvé pour cette adresse IP
-            }
-        } catch (PDOException $e) {
-            die("Erreur de connexion à la base de données: " . $e->getMessage());
-        }
-    }
-
-    function get_table($objetActuel)
-    {
-        global $dsn, $user, $pass;
-
-        try {
-            // Création de l'objet PDO pour la connexion
-            $pdo = new PDO($dsn, $user, $pass);
-            $pdo->setAttribute(PDO::ATTR_ERRMODE, PDO::ERRMODE_EXCEPTION);
-
-            // Préparation de la requête SQL pour récupérer les routes associées à un objet
-            $stmt = $pdo->prepare("SELECT destination, nexthop, interface FROM Route WHERE idobjet = ?");
-
-            // Exécution de la requête avec l'ID de l'objet fourni
-            $stmt->execute([$objetActuel]);
-            // Collecte des routes dans une liste de listes
-            $routes = [];
-            if ($stmt->rowCount() > 0) {
-
-                while ($row = $stmt->fetch(PDO::FETCH_ASSOC)) {
-                    $routes[] = [$row['destination'], $row['nexthop'], $row['interface']];
-                }
-                return $routes;
-            } else {
-                echo "La table de routage est vide"; // Retourne un tableau vide si aucun résultat n'est trouvé
-                return  [];
-            }
-        } catch (PDOException $e) {
-            die("Erreur de connexion à la base de données: " . $e->getMessage());
-        }
-    }
-
-    function get_next_objet($route, $objetActuel) {
-        global $pdo;
-    
-        // Vérifier si l'élément $route[1] est défini
-        if(isset($route[1])) {
-            $nexthop = $route[1];  // Supposant que 'nexthop' est le deuxième élément de $route.
-    
-            $query = "SELECT IdObjet FROM Objet WHERE IpObjet = :nexthop";
-            $stmt = $pdo->prepare($query);
-            $stmt->bindParam(':nexthop', $nexthop);
-            $stmt->execute();
-    
-            // Vérifier les erreurs dans l'exécution de la requête SQL
-            if ($stmt->errorCode() !== '00000') {
-                $errorInfo = $stmt->errorInfo();
-                echo "Erreur SQL : " . $errorInfo[2];
-                return null;
-            }
-    
-            $result = $stmt->fetch(PDO::FETCH_ASSOC);
-    
-            if ($result) {
-                return $result['IdObjet'];  // Retourne l'ID de l'objet suivant si trouvé.
-            } else {
-                return null;  // Retourne null si aucun objet correspondant n'est trouvé.
-            }
-        } else {
-            // Si $route[1] n'est pas défini, retourner null
-            return null;
-        }
-    }
-    
-    function ipMatch($ipDestination, $route){
-        // Extraire l'adresse IP et le masque de sous-réseau de la route
-        $routeParts = explode('/', $route);
-        $network = $routeParts[0];
-        $subnetMask = $routeParts[1];
-    
-        // Convertir l'adresse IP de destination en binaire
-        $ipDestinationBinary = ip2long($ipDestination);
-    
-        // Extraire l'adresse réseau de destination en binaire
-        $networkBinary = ip2long($network);
-    
-        // Calculer le masque de sous-réseau en binaire
-        $subnetMaskBinary = ~((1 << (32 - $subnetMask)) - 1);
-    
-        // Vérifier si l'adresse IP de destination est dans le réseau spécifié
-        if (($ipDestinationBinary & $subnetMaskBinary) == ($networkBinary & $subnetMaskBinary)) {
-            return true;
-        } else {
-            return false;
-        }
-    }
-
-    function main($idDatagramme){
-        $datagramme[] = get_datagramme($idDatagramme);
-        $TTL = $datagramme[0];
-        $protocole = $datagramme[1];
-        $ipSource = $datagramme[2];
-        $ipDestination = $datagramme[3];
-        
-        $objetActuel = get_objet($ipSource);
-        $estArrive = false;
-        $foundmatch = false;
-
-        //Boucle de parcours du chemin vers la déstination
-        while($TTL > 0 and !$estArrive){
-            $table = get_table($objetActuel);
-            foreach ($table as $route){
-                if (ipMatch($ipDestination, $route[0])){
-                    $objetActuel = get_next_objet($route,$objetActuel);
-                    //Sortie LOG -> BD table transporter 
-                    $foundmatch = true;
-                    break;
-                }
-            }
-            if (!$foundmatch){ // cas ou aucune route n'est possible
-                return "Erreur : Pas de route trouvée";
-            }else{
-                $foundmatch = false;
-            }
-
-            if ($objetActuel == $ipDestination){
-                $estArrive = true;
-            }
-            $TTL--;
-        }
-
-        if ($estArrive){
-            return "Le datagramme est arrivé à destination";
-        }
-        if ($TTL == 0){
-            return "Erreur : Le datagramme a expiré";
-        }
-        return "Erreur inconnue";
-
-    }
-?>
 
 <!DOCTYPE html>
 <html>
@@ -303,6 +24,7 @@
 <footer>
     <button id="datagramme-button" style="position: absolute; background-color: #B557FF; color: white; font-family: 'Poppins', sans-serif; border-radius: 76px; border: none; padding: 10px 20px; cursor: pointer; right: 120px; top: 10px">Datagramme</button>
     <button id="lancer-button" style="position: absolute; background-color: #B557FF; color: white; font-family: 'Poppins', sans-serif; border-radius: 76px; border: none; padding: 10px 20px; cursor: pointer; right: 20px; top: 10px">Lancer</button>
+    <!-- TODO lancer-button doit appeler main de fonctionsSimulation.php avec $idDatagramme -->
     <div id="wire" class="draggable"></div>
     <div id="pc" class="draggable"></div>
     <div id="router" class="draggable"></div>
@@ -365,7 +87,7 @@
             $protocole = $_POST['protocole'];
             $source = $_POST['source'];
             $destination = $_POST['destination'];
-            add_datagramme($dsn, $user, $pass, $ttl, $protocole, $source, $destination);
+            $idDatagramme = add_datagramme($dsn, $user, $pass, $ttl, $protocole, $source, $destination);
         }
         ?>
     </div>
@@ -391,7 +113,7 @@
     const typeInput = document.getElementById('type');
     const datagrammeBouton = document.getElementById('datagramme-button');
     const datagrammeFenetre = document.getElementById('datagramme');
-    const ddatagrammeFormulaire = document.getElementById('datagramme-form');
+    const datagrammeFormulaire = document.getElementById('datagramme-form');
     const EquipementFooter = document.querySelectorAll('footer > *');
     let ElementSelectionne = null;
     let CableSelectionne = null;
@@ -399,7 +121,7 @@
     let connexions = [];
     let cableEtEquipement = {};
 
-    function createDraggableElement(element) {
+    async function createDraggableElement(element) {
         // Clonage de l'élément sélectionné
         const clone = element.cloneNode();
         clone.classList.add('clone');
@@ -421,7 +143,6 @@
         
         contextMenu.style.display = 'none';
         // Ajout de l'élément cloné dans le tableau
-        console.log(element.id);
         if (element.id === 'pc') {
             configTitle.textContent = 'Configuration PC';
             reseauInput.style.display = 'none';
@@ -442,14 +163,10 @@
             typeInput.disabled = true;
             typeInput.style.display = 'block';
         }
-        //Rentre le clone dans la BD !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!! IP ET MASK NON DEFINI à création
-        sendData($name= clone.name, $ip= clone.ip,$mask = clone.mask, $x: clone.style.left, $y: clone.style.top, $type: typeInput.value);
-        <?php
-            $cloneid = add_object($dsn, $user, $pass, $name, $ip, $mask,$type ,$x, $y);
-        ?>
-
-        var id_bd = <?php echo json_encode($cloneid); ?>;
-        clone.setAttribute('id_bd', id_bd.toString());
+        //Rentre le clone dans la BD et récupère l'id
+        var cloneData = {name: null, ip: '0', mask: '0', type: typeInput.value, x: clone.getAttribute('data-x'), y: clone.getAttribute('data-y')};
+        var myResult = await sendData('add_object',cloneData);
+        clone.setAttribute('id_bd', myResult);
 
         return clone;
     }
@@ -465,11 +182,9 @@
         target.setAttribute('data-x', x); // Mise à jour des coordonnées de l'élément
         target.setAttribute('data-y', y);
         //mise à jours des cooordoonées dans la BD
-        sendData($idObjet: target.getAttribute('id_bd'), $x: x, $y: y);
-        <?php 
-            move_object($dsn, $user, $pass, $idObjet, $x, $y); 
-        ?>
-
+        var moveData = {idObjet: target.getAttribute('id_bd'), x: x, y: y};
+        sendData('move_object',moveData);
+        
         // Redessiner les connexions lors du déplacement des éléments
         for (let connection of connexions) {
             if (connection.start === target || connection.end === target) {
@@ -545,10 +260,10 @@
                         }
                         cableEtEquipement[ElementsSelectionne[1].id].push(dessin); // Ajout du câble dans le tableau
                         //Ajout de la connexion dans la BD
-                        sendData($idObjetA: ElementsSelectionne[0].getAttribute('id_bd'), $idObjetB: ElementsSelectionne[1].getAttribute('id_bd'), $InterfaceA: , $InterfaceB: );//A completer interfaces
-                        <?php
-                        add_connection($dsn, $user, $pass, $idObjetA, $idObjetB, $InterfaceA, $InterfaceB);
-                        ?>
+                        //TODO demander l'interface lors de création de la connexion
+                        var connectionData = {idObjetA: ElementsSelectionne[0].getAttribute('id_bd'), idObjetB: ElementsSelectionne[1].getAttribute('id_bd'), InterfaceA: null, InterfaceB: null};
+                        sendData('add_connection',connectionData);
+
         
                         ElementsSelectionne = []; // Réinitialisation du tableau
                         CableSelectionne = null; // Réinitialisation du câble sélectionné
@@ -573,10 +288,9 @@
             for (let cable of cableEtEquipement[ElementSelectionne.id]) {
                 cable.clearRect(0, 0, canvas.width, canvas.height);
                 //Suppression de la connexion dans la BD
-                sendData($idObjetA: ElementsSelectionne[0].getAttribute('id_bd'), $idObjetB: ElementsSelectionne[1].getAttribute('id_bd'));
-                <?php
-                    del_connection($dsn, $user, $pass, $idObjetA, $idObjetB);
-                ?>
+                var connectionData = {idObjetA: ElementSelectionne.getAttribute('id_bd')};
+                sendData('del_connections',connectionData);
+                
             }
         }
         // Suppression de l'élément de l'écran
@@ -585,10 +299,8 @@
         contextMenu.style.display = 'none';
         connexions = connexions.filter(connection => connection.start !== ElementSelectionne && connection.end !== ElementSelectionne);
         //Suppression dans la BD
-        sendData($idObjet: ElementsSelectionne.getAttribute('id_bd'));
-        <?php
-            del_object($dsn, $user, $pass, $idObjet); 
-        ?>
+        var delData = {idObjet: ElementSelectionne.getAttribute('id_bd')};
+        sendData('del_object',delData);
     }); 
 
     fermerBouton.addEventListener('click', function () {
@@ -620,11 +332,15 @@
         // Soumission du formulaire de configuration
         event.preventDefault();
         config.style.display = 'none';
-        // Modification dans la BD
-        sendData($idObjet: ElementsSelectionne.getAttribute('id_bd'), $name: nomInput.value, $adresseIP: IPInput.value, $reseau: reseauInput.value);
-        <?php
-            edit_object($dsn, $user, $pass, $idObjet, $name, $adresseIP, $reseau);
-        ?>
+        //Mise à jour dans la BD
+        // OU SONT LES INFOS DU FORMULAIRE AAAAAAAAAAAAAARGH
+        var updateData = {idObjet: ElementSelectionne.getAttribute('id_bd'), name: document.getElementById('nom').value, ip: document.getElementById('adresse-ip').value, mask: document.getElementById('reseau').value, type: document.getElementById('type').value};
+        sendData('edit_object',updateData);
+    });
+
+    document.getElementById('lancer-button').addEventListener('click', function() {
+        // Lancer la simulation
+        sendData('main',);
     });
 
     datagrammeBouton.addEventListener('click', function () {
@@ -636,21 +352,36 @@
         // Soumission du formulaire de configuration du datagramme
         event.preventDefault();
         datagrammeFenetre.style.display = 'none';
+        //Mise à jour dans la BD
+        // AAAAAAAAAAAAAAAAAAAAAAAAAAARGH
+        var datagrammeData = {ttl: document.getElementById('ttl').value, protocole: document.getElementById('protocole').value, source: document.getElementById('source').value, destination: document.getElementById('destination').value};
+        sendData('add_datagramme',datagrammeData);
+        
     });
 
-    function sendData(data) {
-        var xhr = new XMLHttpRequest();
-        xhr.open("POST", "your-server-script.php", true);
-        xhr.setRequestHeader("Content-Type", "application/x-www-form-urlencoded");
+    async function sendData(action, jsonData) {
+        try {
+            const response = await fetch('FonctionsSimulation.php', {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json',
+                },
+                body: JSON.stringify({ action: action, data: jsonData })
+            });
 
-        xhr.onreadystatechange = function() {
-            if (xhr.readyState === 4 && xhr.status === 200) {
-                console.log(xhr.responseText); // Handle response from the server
+            if (!response.ok) {
+                throw new Error('Network response was not ok');
             }
-        };
 
-        xhr.send("data=" + encodeURIComponent(JSON.stringify(data)));
+            const result = await response.text();  // Use response.json() if expecting JSON
+            return result;
+        } catch (error) {
+            console.error('Error:', error);
+            throw error;  // Re-throw the error if you want to handle it later
+        }
     }
+
+
 
 </script>
 </body>
