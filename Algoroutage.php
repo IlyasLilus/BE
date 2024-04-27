@@ -103,52 +103,31 @@ function get_table($objetActuel)
     }
 }
 
-function get_next_objet($route, $objetActuel) {
-    global $pdo;
+function getNewNexthop($pdo, $router, $idObject) {
+    $stmt = $pdo->prepare("SELECT nexthop FROM route WHERE nexthop = :router AND id_object = :idObject");
+    $stmt->execute(['router' => $router, 'idObject' => $idObject]);
+    $newRouter = $stmt->fetchColumn();
 
-    // Vérifier si l'élément $route[1] est défini
-    if(isset($route[1])) {
-        $nexthop = $route[1];  // Supposant que 'nexthop' est le deuxième élément de $route.
-
-        $query = "SELECT IdObjet FROM Objet WHERE IpObjet = :nexthop";
-        $stmt = $pdo->prepare($query);
-        $stmt->bindParam(':nexthop', $nexthop);
-        $stmt->execute();
-
-        // Vérifier les erreurs dans l'exécution de la requête SQL
-        if ($stmt->errorCode() !== '00000') {
-            $errorInfo = $stmt->errorInfo();
-            echo "Erreur SQL : " . $errorInfo[2];
-            return null;
-        }
-
-        $result = $stmt->fetch(PDO::FETCH_ASSOC);
-
-        if ($result) {
-            return $result['IdObjet'];  // Retourne l'ID de l'objet suivant si trouvé.
-        } else {
-            return null;  // Retourne null si aucun objet correspondant n'est trouvé.
-        }
-    } else {
-        // Si $route[1] n'est pas défini, retourner null
-        return null;
+    if ($newRouter === false || $newRouter == $router) {
+        echo "Aucun nouveau nexthop trouvé ou boucle détectée<br>";
+        return false;  // Retourne false pour signaler qu'aucun nouveau nexthop valide n'a été trouvé
     }
+
+    echo "Nouveau nexthop : $newRouter<br>";
+    return $newRouter;  // Retourne le nouveau nexthop si trouvé
 }
 
-function ipMatch($ipDestination, $route){
-    // Extraire l'adresse IP et le masque de sous-réseau de la route
-    $routeParts = explode('/', $route);
-    $network = $routeParts[0];
-    $subnetMask = $routeParts[1];
 
+
+function ipMatch($ipDestination, $ipSource, $mask) {
     // Convertir l'adresse IP de destination en binaire
     $ipDestinationBinary = ip2long($ipDestination);
 
-    // Extraire l'adresse réseau de destination en binaire
-    $networkBinary = ip2long($network);
+    // Convertir l'adresse IP source en binaire
+    $networkBinary = ip2long($ipSource);
 
     // Calculer le masque de sous-réseau en binaire
-    $subnetMaskBinary = ~((1 << (32 - $subnetMask)) - 1);
+    $subnetMaskBinary = ~((1 << (32 - $mask)) - 1);
 
     // Vérifier si l'adresse IP de destination est dans le réseau spécifié
     if (($ipDestinationBinary & $subnetMaskBinary) == ($networkBinary & $subnetMaskBinary)) {
@@ -157,6 +136,56 @@ function ipMatch($ipDestination, $route){
         return false;
     }
 }
+
+function findAndSaveNextHops($pdo, $idObject, $destinationIP) {
+    $nextHops = [];  // Tableau pour stocker tous les nexthops rencontrés
+
+    // Obtenez le premier nexthop
+    $stmt = $pdo->prepare("SELECT nexthop FROM route WHERE id_object = :idObject");
+    $stmt->execute(['idObject' => $idObject]);
+    $router = $stmt->fetchColumn();
+
+    if ($router) {
+        $nextHops[] = $router;  // Ajoute le premier nexthop au tableau
+        echo "Nexthop initial : $router<br>";
+    }
+
+    while ($router != $destinationIP) {
+        // Vérifier si l'une des interfaces correspond
+        $interfaces = $pdo->query("SELECT name, ip, mask, id_object FROM interface WHERE id_object = $idObject");
+        $matchFound = false;
+        foreach ($interfaces as $interface) {
+            if ($interface['ip'] == $router) {
+                echo "Interface correspondante trouvée : " . $interface['name'] . "<br>";
+                $matchFound = true;
+                break;
+            }
+        }
+
+        if ($matchFound) {
+            break;
+        }
+
+        // Obtenez un nouveau nexthop si disponible
+        $newRouter = getNewNexthop($pdo, $router, $idObject);
+
+        if ($newRouter === false) {  // Gestion de la boucle ou du non-trouvé
+            break;
+        }
+
+        $router = $newRouter;
+        $nextHops[] = $newRouter;  // Ajoute le nouveau nexthop au tableau
+    }
+
+    // Création du fichier avec tous les nexthops
+    $file = 'nexthops.txt';
+    file_put_contents($file, implode("\n", $nextHops));
+    echo "Fichier créé avec succès : $file<br>";
+
+    // Lien pour télécharger le fichier
+    echo "<a href='$file'>Télécharger les nexthops</a>";
+}
+
 
 function main($idDatagramme){
     $datagramme[] = get_datagramme($idDatagramme);
