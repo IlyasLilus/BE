@@ -19,7 +19,7 @@ $role = $stmt->fetchColumn();
 $projets = [];
 $tickets = [];
 if ($role == 'User') {
-    $sql = "SELECT fichierProjet_miyaou 
+    $sql = "SELECT idProjet 
             FROM Projet P
             WHERE P.Pseudonyme = :pseudonyme";
     $stmt = $pdo->prepare($sql);
@@ -79,13 +79,13 @@ if ($role == 'Admin') {
                     <?php foreach ($projets as $projet) : ?>
                         <div class="Projets-content-container">
                             <div class="Projets-content-container-title">Projet :</div>
-                            <div class="Projets-content-container-description"><?= $projet['fichierprojet_miyaou'] ?></div>
-                            <div class="Projets-content-container-button-acceder"><button>Accéder</button></div>
-                            <div class="Projets-content-container-button-supprimer"><button>Supprimer</button></div>
+                            <div class="Projets-content-container-description"><?= $projet['idprojet'] ?></div>
+                            <div class="Projets-content-container-button-acceder"><button><a href="Simulation.php">Accéder</a></button></div>
+                            <div class="Projets-content-container-button-supprimer"><button onclick="deleteProjet(<?= $projet['idprojet'] ?>)">Supprimer</button></div>
                         </div>
                     <?php endforeach; ?>
                     <div class="bouton-creation-container">
-                        <button class="bouton-creation">Créer un nouveau projet</button>
+                        <button onclick="createProjet()" class="bouton-creation"><a href="Simulation.php">Créer un nouveau projet</a></button>
                     </div>
                 </div>
             </div>
@@ -99,10 +99,10 @@ if ($role == 'Admin') {
                 <div class="Tickets-content">
                     <?php foreach ($tickets as $ticket) : ?>
                         <div class="Tickets-content-container">
-                            <div class="Tickets-content-container-title">Ticket ID: <?= $ticket['idTicket'] ?></div>
-                            <div class="Tickets-content-container-description">Raison: <?= $ticket['RaisonTicket'] ?></div>
-                            <div class="Tickets-content-container-date">Date: <?= $ticket['dateTicket'] ?></div>
-                            <div class="Tickets-content-container-button-traiter"><button>Traiter</button></div>
+                            <div class="Tickets-content-container-title">Ticket ID: <?= $ticket['idticket'] ?></div>
+                            <div class="Tickets-content-container-description">Raison: <?= $ticket['raisonticket'] ?></div>
+                            <div class="Tickets-content-container-date">Date: <?= $ticket['dateticket'] ?></div>
+                            <div class="Tickets-content-container-button-traiter"><button onclick="traiterTicket(<?=$ticket['idticket']?>)">Traiter</button></div>
                         </div>
                     <?php endforeach; ?>
                 </div>
@@ -116,4 +116,29 @@ if ($role == 'Admin') {
             </div>
         </section>
     </footer>
+    <script>
+        function deleteProjet(idProjet) {
+            <?php
+                $query = $pdo->prepare("DELETE FROM Projet WHERE idProjet = :idProjet");
+                $query->bindParam(':idProjet', $_POST['idProjet']);
+                $query->execute();
+            ?>
+        }
+
+        function createProjet(){
+            <?php
+                $query = $pdo->prepare("INSERT INTO Projet "); //Solution pour l'ID ? 
+                $query->execute();
+            ?>
+        }
+
+        function traiterTicket(idTicket){
+            <?php
+                $query = $pdo->prepare("DELETE FROM TicketSupport WHERE idTicket = :idTicket");
+                $query->bindParam(':idTicket', $_POST['idTicket']);
+                $query->execute();
+            ?>
+        }
+    </script>
+<!-- Comment charger un projet existant sur la page de Simulation.php ? -->
 </body>
