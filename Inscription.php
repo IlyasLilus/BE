@@ -55,14 +55,31 @@ if (isset($_POST["submit"])) {
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Inscription</title>
     <link rel="stylesheet" href="style/style_inscription.css">
-    <!-- <link rel="preconnect" href="https://fonts.googleapis.com"> -->
     <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@800&family=Teko:wght@300;600&display=swap" rel="stylesheet">
-
-    <link rel="stylesheet" href="mobile_anim.css" media="(max-width:900px)">
-    <!-- <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.1.1/css/all.min.css"> -->
 </head>
 
 <body>
+
+    <style>
+        .success {
+            color: greenyellow;
+            position: absolute;
+            font-weight: bold;
+            font-size: 18px;
+            top: 65%;
+            right: 42%;
+        }
+
+        .erreur {
+            color: red;
+            position: absolute;
+            font-weight: bold;
+            font-size: 18px;
+            top: 65%;
+            right: 42%;
+
+        }
+    </style>
     <header class="header" id="header">
         <nav>
             <ul>
@@ -96,8 +113,8 @@ if (isset($_POST["submit"])) {
                     <input class="password" placeholder="Mot de passe" name="password1" type="password" autocomplete="current-password" required>
                     <input type="password" name="password2" placeholder="confirmer votre mot de passe" name="passc" required>
                 </div>
-               
-                <p class="membre">Déjà membre? <a class="connect" href="">Connectez Vous</a></p>
+
+                <p class="membre">Déjà membre? <a class="connect" href="Connexion.php">Connectez Vous</a></p>
                 <input type="submit" class="submit" name="submit" value="S'inscrire">
             </form>
         </div>
