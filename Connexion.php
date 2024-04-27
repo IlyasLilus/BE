@@ -82,7 +82,7 @@ if (isset($_POST['connect'])) {
                     <input class="password" placeholder="Mot de passe" name="password" type="password" required>
                 </div>
 
-                <p class="membre"> Pas de compte? <a class="connect" href="">Inscrivez Vous</a></p>
+                <p class="membre"> Pas de compte? <a class="connect" href="Inscription.php">Inscrivez Vous</a></p>
                 <input type="submit" class="submit" name="connect" value="Se connecter">
             </form>
         </div>

@@ -1,41 +1,4 @@
-<?php
-session_start();
-$id_utilisateur = $_SESSION['id_utilisateur'];
-$host = 'localhost';
-$db   = 'BE';
-$user = 'postgres';
-$pass = 'a';
-$charset = 'utf8mb4';
-$port = '5432';
 
-$dsn = "pgsql:host=$host;dbname=$db;port=$port;user=$user;password=$pass";
-$pdo = new PDO($dsn, $user, $pass);
-
-$sql = "SELECT Userrole FROM Utilisateur WHERE pseudonyme = :pseudonyme";
-$stmt = $pdo->prepare($sql);
-$stmt->execute(['pseudonyme' => $id_utilisateur]);
-$role = $stmt->fetchColumn();
-
-$projets = [];
-$tickets = [];
-if ($role == 'User') {
-    $sql = "SELECT fichierProjet_miyaou 
-            FROM Projet P
-            WHERE P.Pseudonyme = :pseudonyme";
-    $stmt = $pdo->prepare($sql);
-    $stmt->execute(['pseudonyme' => $id_utilisateur]);
-    $projets = $stmt->fetchAll(PDO::FETCH_ASSOC);
-}
-
-if ($role == 'Admin') {
-    $sql = "SELECT idTicket, RaisonTicket, dateTicket 
-            FROM TicketSupport T, Utilisateur U
-            WHERE T.Pseudonyme = U.Pseudonyme";
-    $stmt = $pdo->prepare($sql);
-    $stmt->execute(['pseudonyme' => $id_utilisateur]);
-    $tickets = $stmt->fetchAll(PDO::FETCH_ASSOC);
-}
-?>
 <!DOCTYPE html>
 <html>
 
