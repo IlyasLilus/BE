@@ -340,7 +340,8 @@
 
     document.getElementById('lancer-button').addEventListener('click', function() {
         // Lancer la simulation
-        sendData('main',);
+        // L'id du datagramme vas ou 
+        sendData('main',id_datagram);
     });
 
     datagrammeBouton.addEventListener('click', function () {
@@ -348,14 +349,14 @@
         datagrammeFenetre.style.display = 'block';
     });
 
-    datagrammeFormulaire.addEventListener('submit', function (event) {
+    datagrammeFormulaire.addEventListener('submit', async function (event) {
         // Soumission du formulaire de configuration du datagramme
         event.preventDefault();
         datagrammeFenetre.style.display = 'none';
         //Mise à jour dans la BD
         // AAAAAAAAAAAAAAAAAAAAAAAAAAARGH
         var datagrammeData = {ttl: document.getElementById('ttl').value, protocole: document.getElementById('protocole').value, source: document.getElementById('source').value, destination: document.getElementById('destination').value};
-        sendData('add_datagramme',datagrammeData);
+        var id_datagram= await sendData('add_datagramme',datagrammeData);
         
     });
 
