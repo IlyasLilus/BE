@@ -121,15 +121,20 @@ if ($role == 'Admin') {
     </footer>
     <script>
         function deleteProjet(idProjet) {
-            <?php
-                $query = $pdo->prepare("DELETE FROM Projet WHERE idProjet = :idProjet");
-                $query->bindParam('idProjet', $_POST['idProjet']);
-                $query->execute();
-                
-            ?>
-            window.location.reload();
+            fetch('delete_projet.php', {
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/x-www-form-urlencoded',
+            },
+            body: 'idProjet=' + idProjet  // Ensure this data is properly encoded in a real scenario
+            })
+            .then(response => response.text())
+            .then(text => {
+            console.log(text); // Log response from the PHP script
+            window.location.reload(); // Reload the page to update the list of projects
+            }).catch(error => console.error('Error:', error));
         }
-
+        
         function createProjet(){
             fetch('creation_projet.php', {
                 method: 'POST'
