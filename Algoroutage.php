@@ -103,7 +103,12 @@ function get_table($objetActuel)
     }
 }
 
-function getNewNexthop($pdo, $router, $idObject) {
+function getNewNexthop($router, $idObject) {
+    global $dsn, $user, $pass;
+    // Création de l'objet PDO pour la connexion
+    $pdo = new PDO($dsn, $user, $pass);
+    $pdo->setAttribute(PDO::ATTR_ERRMODE, PDO::ERRMODE_EXCEPTION);
+
     $stmt = $pdo->prepare("SELECT nexthop FROM route WHERE nexthop = :router AND id_object = :idObject");
     $stmt->execute(['router' => $router, 'idObject' => $idObject]);
     $newRouter = $stmt->fetchColumn();
@@ -137,9 +142,14 @@ function ipMatch($ipDestination, $ipSource, $mask) {
     }
 }
 
-function findAndSaveNextHops($pdo, $idObject, $destinationIP) {
+function findAndSaveNextHops($idObject, $destinationIP) {
+    global $dsn, $user, $pass;
+    
     $nextHops = [];  // Tableau pour stocker tous les nexthops rencontrés
 
+    // Création de l'objet PDO pour la connexion
+    $pdo = new PDO($dsn, $user, $pass);
+    $pdo->setAttribute(PDO::ATTR_ERRMODE, PDO::ERRMODE_EXCEPTION);
     // Obtenez le premier nexthop
     $stmt = $pdo->prepare("SELECT nexthop FROM route WHERE id_object = :idObject");
     $stmt->execute(['idObject' => $idObject]);
@@ -167,7 +177,7 @@ function findAndSaveNextHops($pdo, $idObject, $destinationIP) {
         }
 
         // Obtenez un nouveau nexthop si disponible
-        $newRouter = getNewNexthop($pdo, $router, $idObject);
+        $newRouter = getNewNexthop($router, $idObject);
 
         if ($newRouter === false) {  // Gestion de la boucle ou du non-trouvé
             break;
@@ -187,7 +197,7 @@ function findAndSaveNextHops($pdo, $idObject, $destinationIP) {
 }
 
 
-function main($pdo, $idDatagramme) {
+function main($idDatagramme) {
     // Récupérer les informations du datagramme
     $datagramme = get_datagramme($idDatagramme);
     if (!$datagramme) {
@@ -214,7 +224,7 @@ function main($pdo, $idDatagramme) {
         $foundMatch = false;
         foreach ($routes as $route) {
             if (ipMatch($ipDestination, $route[0], $objetActuel['masque'])) {
-                $newRouter = getNewNexthop($pdo, $route[1], $objetActuel['id']);
+                $newRouter = getNewNexthop($route[1], $objetActuel['id']);
                 if ($newRouter === false) {
                     break; // Aucun nouveau nexthop trouvé ou boucle détectée
                 }

@@ -135,7 +135,7 @@
         $result = $conn->query($sql);
         $row = $result->fetch(PDO::FETCH_ASSOC);
         $idDatagramme = $row['IdDatagramme'];
-    
+        
         return $idDatagramme;
     }
     
@@ -145,7 +145,8 @@
         $conn->query($sql);
     }
 
-    function get_datagramme($idDatagramme){
+    function get_datagramme($idDatagramme)
+    {
         global $dsn, $user, $pass;
 
         try {
@@ -154,8 +155,9 @@
             $pdo->setAttribute(PDO::ATTR_ERRMODE, PDO::ERRMODE_EXCEPTION);
 
             // Préparation de la requête SQL
-            $stmt = $pdo->prepare("SELECT TTL, protocole, ipSource, ipDestination FROM Datagramme WHERE idDatagramme = ?");
-            $stmt->execute([$idDatagramme]);
+            $stmt = $pdo->prepare("SELECT ttl, protocole, sourcedata, destination FROM Datagramme WHERE idDatagramme = :idDatagramme");
+            $stmt->bindParam(':idDatagramme', $idDatagramme);
+            $stmt->execute();
 
             // Récupération des résultats
             $result = $stmt->fetch(PDO::FETCH_ASSOC);
@@ -238,52 +240,36 @@
         }
     }
 
-    function get_next_objet($route, $objetActuel) {
-        global $pdo;
+    function getNewNexthop($router, $idObject) {
+        global $dsn, $user, $pass;
+        // Création de l'objet PDO pour la connexion
+        $pdo = new PDO($dsn, $user, $pass);
+        $pdo->setAttribute(PDO::ATTR_ERRMODE, PDO::ERRMODE_EXCEPTION);
     
-        // Vérifier si l'élément $route[1] est défini
-        if(isset($route[1])) {
-            $nexthop = $route[1];  // Supposant que 'nexthop' est le deuxième élément de $route.
+        $stmt = $pdo->prepare("SELECT nexthop FROM route WHERE nexthop = :router AND id_object = :idObject");
+        $stmt->execute(['router' => $router, 'idObject' => $idObject]);
+        $newRouter = $stmt->fetchColumn();
     
-            $query = "SELECT IdObjet FROM Objet WHERE IpObjet = :nexthop";
-            $stmt = $pdo->prepare($query);
-            $stmt->bindParam(':nexthop', $nexthop);
-            $stmt->execute();
-    
-            // Vérifier les erreurs dans l'exécution de la requête SQL
-            if ($stmt->errorCode() !== '00000') {
-                $errorInfo = $stmt->errorInfo();
-                echo "Erreur SQL : " . $errorInfo[2];
-                return null;
-            }
-    
-            $result = $stmt->fetch(PDO::FETCH_ASSOC);
-    
-            if ($result) {
-                return $result['IdObjet'];  // Retourne l'ID de l'objet suivant si trouvé.
-            } else {
-                return null;  // Retourne null si aucun objet correspondant n'est trouvé.
-            }
-        } else {
-            // Si $route[1] n'est pas défini, retourner null
-            return null;
+        if ($newRouter === false || $newRouter == $router) {
+            echo "Aucun nouveau nexthop trouvé ou boucle détectée<br>";
+            return false;  // Retourne false pour signaler qu'aucun nouveau nexthop valide n'a été trouvé
         }
+    
+        echo "Nouveau nexthop : $newRouter<br>";
+        return $newRouter;  // Retourne le nouveau nexthop si trouvé
     }
     
-    function ipMatch($ipDestination, $route){
-        // Extraire l'adresse IP et le masque de sous-réseau de la route
-        $routeParts = explode('/', $route);
-        $network = $routeParts[0];
-        $subnetMask = $routeParts[1];
     
+    
+    function ipMatch($ipDestination, $ipSource, $mask) {
         // Convertir l'adresse IP de destination en binaire
         $ipDestinationBinary = ip2long($ipDestination);
     
-        // Extraire l'adresse réseau de destination en binaire
-        $networkBinary = ip2long($network);
+        // Convertir l'adresse IP source en binaire
+        $networkBinary = ip2long($ipSource);
     
         // Calculer le masque de sous-réseau en binaire
-        $subnetMaskBinary = ~((1 << (32 - $subnetMask)) - 1);
+        $subnetMaskBinary = ~((1 << (32 - $mask)) - 1);
     
         // Vérifier si l'adresse IP de destination est dans le réseau spécifié
         if (($ipDestinationBinary & $subnetMaskBinary) == ($networkBinary & $subnetMaskBinary)) {
@@ -292,48 +278,115 @@
             return false;
         }
     }
-
-    function main($idDatagramme){
-        $datagramme[] = get_datagramme($idDatagramme);
-        $TTL = $datagramme[0];
-        $protocole = $datagramme[1];
-        $ipSource = $datagramme[2];
-        $ipDestination = $datagramme[3];
+    
+    function findAndSaveNextHops($idObject, $destinationIP) {
+        global $dsn, $user, $pass;
         
-        $objetActuel = get_objet($ipSource);
-        $estArrive = false;
-        $foundmatch = false;
-
-        //Boucle de parcours du chemin vers la déstination
-        while($TTL > 0 and !$estArrive){
-            $table = get_table($objetActuel);
-            foreach ($table as $route){
-                if (ipMatch($ipDestination, $route[0])){
-                    $objetActuel = get_next_objet($route,$objetActuel);
-                    //Sortie LOG -> BD table transporter 
-                    $foundmatch = true;
+        $nextHops = [];  // Tableau pour stocker tous les nexthops rencontrés
+    
+        // Création de l'objet PDO pour la connexion
+        $pdo = new PDO($dsn, $user, $pass);
+        $pdo->setAttribute(PDO::ATTR_ERRMODE, PDO::ERRMODE_EXCEPTION);
+        // Obtenez le premier nexthop
+        $stmt = $pdo->prepare("SELECT nexthop FROM route WHERE id_object = :idObject");
+        $stmt->execute(['idObject' => $idObject]);
+        $router = $stmt->fetchColumn();
+    
+        if ($router) {
+            $nextHops[] = $router;  // Ajoute le premier nexthop au tableau
+            echo "Nexthop initial : $router<br>";
+        }
+    
+        while ($router != $destinationIP) {
+            // Vérifier si l'une des interfaces correspond
+            $interfaces = $pdo->query("SELECT name, ip, mask, id_object FROM interface WHERE id_object = $idObject");
+            $matchFound = false;
+            foreach ($interfaces as $interface) {
+                if ($interface['ip'] == $router) {
+                    echo "Interface correspondante trouvée : " . $interface['name'] . "<br>";
+                    $matchFound = true;
                     break;
                 }
             }
-            if (!$foundmatch){ // cas ou aucune route n'est possible
-                return "Erreur : Pas de route trouvée";
-            }else{
-                $foundmatch = false;
+    
+            if ($matchFound) {
+                break;
             }
-
-            if ($objetActuel == $ipDestination){
-                $estArrive = true;
+    
+            // Obtenez un nouveau nexthop si disponible
+            $newRouter = getNewNexthop($router, $idObject);
+    
+            if ($newRouter === false) {  // Gestion de la boucle ou du non-trouvé
+                break;
             }
+    
+            $router = $newRouter;
+            $nextHops[] = $newRouter;  // Ajoute le nouveau nexthop au tableau
+        }
+    
+        // Création du fichier avec tous les nexthops
+        $file = 'nexthops.txt';
+        file_put_contents($file, implode("\n", $nextHops));
+        echo "Fichier créé avec succès : $file<br>";
+    
+        // Lien pour télécharger le fichier
+        echo "<a href='$file'>Télécharger les nexthops</a>";
+    }
+    
+    
+    function main($idDatagramme) {
+        // Récupérer les informations du datagramme
+        $datagramme = get_datagramme($idDatagramme);
+        if (!$datagramme) {
+            return "Erreur : Datagramme non trouvé.";
+        }
+    
+        $TTL = $datagramme['TTL'];
+        $ipSource = $datagramme['ipSource'];
+        $ipDestination = $datagramme['ipDestination'];
+    
+        // Récupérer l'objet actuel basé sur l'IP source
+        $objetActuel = get_objet($ipSource);
+        if (!$objetActuel) {
+            return "Erreur : Objet non trouvé pour l'IP source spécifiée.";
+        }
+    
+        // Vérifier et parcourir la route jusqu'à la destination
+        while ($TTL > 0) {
+            $routes = get_table($objetActuel);
+            if (empty($routes)) {
+                return "Erreur : Table de routage vide ou aucune route disponible.";
+            }
+    
+            $foundMatch = false;
+            foreach ($routes as $route) {
+                if (ipMatch($ipDestination, $route[0], $objetActuel['masque'])) {
+                    $newRouter = getNewNexthop($route[1], $objetActuel['id']);
+                    if ($newRouter === false) {
+                        break; // Aucun nouveau nexthop trouvé ou boucle détectée
+                    }
+                    $objetActuel = get_objet($newRouter); // Mise à jour de l'objet actuel
+                    $foundMatch = true;
+                    break;
+                }
+            }
+    
+            if (!$foundMatch) {
+                return "Erreur : Aucune correspondance de route trouvée.";
+            }
+    
+            if ($objetActuel['ip'] == $ipDestination) {
+                return "Le datagramme est arrivé à destination.";
+            }
+    
             $TTL--;
         }
-
-        if ($estArrive){
-            return "Le datagramme est arrivé à destination";
-        }
-        if ($TTL == 0){
-            return "Erreur : Le datagramme a expiré";
+    
+        if ($TTL == 0) {
+            return "Erreur : Le datagramme a expiré.";
         }
         return "Erreur inconnue";
-
+    
     }
+    ?>
 ?>

@@ -19,7 +19,7 @@ session_start();
             <ul>
                 <li class="go"><a href="Accueil.php">Accueil</a></li>
                 <li class="go"><a href="Contact.php">Support</a></li>
-                <li class="go"><a href="About.php">About</a></li>
+                <li class="go"><a href="propos.php">About</a></li>
             </ul>
         </nav>
         <div class="cont-header">

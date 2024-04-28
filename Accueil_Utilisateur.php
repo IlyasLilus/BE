@@ -2,12 +2,12 @@
 session_start();
 //$id_utilisateur = $_SESSION['id_utilisateur'];
 //pour teste:
-$id_utilisateur = 'Admin1';
+$id_utilisateur = 'User1';
 
 $host = 'localhost';
-$db   = 'postgres';
+$db   = 'BE';
 $user = 'postgres';
-$pass = 'pourlabd';
+$pass = 'a';
 $charset = 'utf8mb4';
 $port = '5432';
 
