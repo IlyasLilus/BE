@@ -35,13 +35,13 @@ NetVision est le fruit du travail d'un groupe d'étudiants passionnés par les r
                 <img src="image/belhiss.jpeg" alt="Membre 1" class="left">
                 <div class="text">
                     <h3>Achraf BELHISS</h3>
-                    <p>Etudiant en L3 IRT passionée par les réseaux et les systèmes</p>
+                    <p>Etudiant en L3 IRT passionné par les réseaux et les systèmes</p>
                 </div>
             </article>
             <article class="member">
                 <div class="text">
                     <h3>Youssef EL MIR</h3>
-                    <p>Etudiant en L3 IRT passionée par les réseaux et les systèmes</p>
+                    <p>Etudiant en L3 IRT passionné par les réseaux et les systèmes</p>
                 </div>
                 <img src="image/elmir.jpeg" alt="Membre 2" class="right">
             </article>
@@ -49,13 +49,13 @@ NetVision est le fruit du travail d'un groupe d'étudiants passionnés par les r
                 <img src="image/jaballah.jpeg" alt="Membre 3" class="left">
                 <div class="text">
                     <h3>Ilyas JABALLAH</h3>
-                    <p>Etudiant en L3 IRT passionée par le cloud et la cybersécurité</p>
+                    <p>Etudiant en L3 IRT passionné par le cloud et la cybersécurité</p>
                 </div>
             </article>
             <article class="member">
                 <div class="text">
                     <h3>Mohammed BENANTAR</h3>
-                    <p>Etudiant en L3 IRT passionée par le domaine de la cybersécurité</p>   
+                    <p>Etudiant en L3 IRT passionné par le domaine de la cybersécurité</p>   
                 </div>
                 <img src="image/BENANTAR.jpeg" alt="Membre 2" class="right">
             </article>
