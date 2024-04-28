@@ -13,7 +13,8 @@
     //pour test: 
     $idProjet = 1;
 
-    $idDatagramme = null;
+    global $idDatagramme;
+    $idDatagramme = 0;
 
     function modifierObjet($dsn, $user, $pass, $name, $ip, $mask, $type){
         if($name != null && $ip != null && $mask != null && $type != null){
@@ -126,6 +127,8 @@
             <input type="text" id="source" name="source"><br>
             <label for="destination">Destination:</label><br>
             <input type="text" id="destination" name="destination"><br>
+            <label for="idDatagramme">Id du datagramme:</label>
+            <input type= "iddatagramme" id= "iddatagramme" style="display: none;"><br>
             <input type="submit" value="Submit">
             <button onclick="datagrammeFenetre.style.display = 'none'">Annuler</button>
         </form>
@@ -138,10 +141,10 @@
             $idDatagramme = ajouterDatagramme($dsn, $user, $pass, $ttl, $protocole, $source, $destination);
 
             if($idDatagramme=="E1"){
-                echo "Erreur: Adresse IP incorrecte";
+                echo "<script>alert(Erreur: Adresse IP incorrecte)</script>";
             }
             else if($idDatagramme=="E2"){
-                echo "Erreur: Champs vides";
+                echo "<script>alert(Erreur: Champs vides)</script>";
             }
             else{
                 echo "<script> var id_Datagramme = " + json_encode($idDatagramme) + ";</script>";
@@ -399,10 +402,11 @@
         config.style.display = 'none';
     });
 
-    document.getElementById('lancer-button').addEventListener('click', function() {
+    document.getElementById('lancer-button').addEventListener('click', async function() {
         // Lancer la simulation
-        var idData = {iddatagramme: <?php echo $idDatagramme; ?>};
-        sendData('main',idData);
+        var idData = {idDatagramme: <?php echo $idDatagramme; ?>};
+        var myResult = await sendData('main',idData);
+        
     });
 
     datagrammeBouton.addEventListener('click', function () {
