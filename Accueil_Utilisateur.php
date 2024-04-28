@@ -24,7 +24,7 @@ $tickets = [];
 if ($role == 'User') {
     $sql = "SELECT idProjet 
             FROM Projet P
-            WHERE P.Pseudonyme = :pseudonyme";
+            WHERE P.pseudonyme = :pseudonyme";
     $stmt = $pdo->prepare($sql);
     $stmt->execute(['pseudonyme' => $id_utilisateur]);
     $projets = $stmt->fetchAll(PDO::FETCH_ASSOC);
@@ -33,7 +33,7 @@ if ($role == 'User') {
 if ($role == 'Admin') {
     $sql = "SELECT idTicket, RaisonTicket, dateTicket 
             FROM TicketSupport T, Utilisateur U
-            WHERE T.Pseudonyme = U.Pseudonyme";
+            WHERE T.pseudonyme = U.pseudonyme";
     $stmt = $pdo->prepare($sql);
     $stmt->execute(['pseudonyme' => $id_utilisateur]);
     $tickets = $stmt->fetchAll(PDO::FETCH_ASSOC);
@@ -74,7 +74,7 @@ if ($role == 'Admin') {
             <div>Bienvenue dans <span>votre<br>espace !</span></div>
         </div>
     </section>
-    <?php if ($role == 'utilisateur') : ?>
+    <?php if ($role == 'User') : ?>
         <section class="Projets">
             <div class="Projets-container">
                 <div class="Projets-title">Mes Projets</div>
@@ -95,7 +95,7 @@ if ($role == 'Admin') {
         </section>
     <?php endif; ?>
 
-    <?php if ($role == 'administrateur') : ?>
+    <?php if ($role == 'Admin') : ?>
         <section class="Tickets">
             <div class="Tickets-container">
                 <div class="Tickets-title">Tickets</div>
