@@ -120,23 +120,16 @@ if ($role == 'Admin') {
         </section>
     </footer>
     <script>
-        document.querySelector('.bouton-creation').addEventListener('click', function() {
-            createProjet();
-        });
+        const creerProjet = document.getElementById('.bouton-creation');
+        const supprimerProjet = document.getElementById('.Projets-content-container-button-supprimer');
+        const accederProjet = document.getElementById('.Projets-content-container-button-acceder');
+        const traiterTicket = document.getElementById('.Projets-content-container-button-traiter');
 
-        document.querySelector('.Projets-content-container-button-supprimer').addEventListener('click', function() {
-            deleteProjet(idProjet);
-        });
-
-        document.querySelector('.Projets-content-container-button-acceder').addEventListener('click', function() {
-            ouvrirProjetProjet(idProjet);
-        });
-
-        document.querySelector('.Projets-content-container-button-traiter').addEventListener('click', function() {
-            traiterTicket(idTicket);
-        });
-
-
+        creerProjet.addEventListener('click', createProjet);
+        supprimerProjet.addEventListener('click', deleteProjet);
+        accederProjet.addEventListener('click', ouvrirProjet);
+        traiterTicket.addEventListener('click', traiterTicket);
+        
         function deleteProjet(idProjet) {
             <?php
                 $query = $pdo->prepare("DELETE FROM Projet WHERE idProjet = :idProjet");
