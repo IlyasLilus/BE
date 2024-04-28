@@ -88,7 +88,7 @@ if ($role == 'Admin') {
                         </div>
                     <?php endforeach; ?>
                     <div class="bouton-creation-container">
-                        <button onclick="createProjet()" class="bouton-creation"><a href="Simulation.php">Créer un nouveau projet</a></button>
+                        <button onclick="createProjet()" class="bouton-creation">Créer un nouveau projet</a></button>
                     </div>
                 </div>
             </div>
@@ -133,6 +133,8 @@ if ($role == 'Admin') {
                 $query = $pdo->prepare("INSERT INTO Projet (datecreationprojet, pseudonyme) VALUES (now(), '$id_utilisateur');");  
                 $query->execute();
             ?>
+            //actualisation de la page pour recharger la liste des projets
+            window.location.reload();
         }
 
         function traiterTicket(idTicket){
