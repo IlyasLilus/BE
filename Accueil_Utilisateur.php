@@ -2,12 +2,12 @@
 session_start();
 //$id_utilisateur = $_SESSION['id_utilisateur'];
 //pour teste:
-$id_utilisateur = 'User1';
+$id_utilisateur = 'Admin1';
 
 $host = 'localhost';
-$db   = 'BE';
+$db   = 'postgres';
 $user = 'postgres';
-$pass = 'a';
+$pass = 'pourlabd';
 $charset = 'utf8mb4';
 $port = '5432';
 
@@ -33,9 +33,9 @@ if ($role == 'User') {
 if ($role == 'Admin') {
     $sql = "SELECT idTicket, RaisonTicket, dateTicket 
             FROM TicketSupport T, Utilisateur U
-            WHERE T.pseudonyme = U.pseudonyme";
+            WHERE T.Pseudonyme = U.Pseudonyme";
     $stmt = $pdo->prepare($sql);
-    $stmt->execute(['pseudonyme' => $id_utilisateur]);
+    $stmt->execute();
     $tickets = $stmt->fetchAll(PDO::FETCH_ASSOC);
 }
 ?>
