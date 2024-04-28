@@ -83,12 +83,12 @@ if ($role == 'Admin') {
                         <div class="Projets-content-container">
                             <div class="Projets-content-container-title">Projet :</div>
                             <div class="Projets-content-container-description"><?= $projet['idprojet'] ?></div>
-                            <div class="Projets-content-container-button-acceder"><button onclick = "ouvrirProjet(<?= $projet['idprojet'] ?>)">Accéder</button></div>
-                            <div class="Projets-content-container-button-supprimer"><button onclick="deleteProjet(<?= $projet['idprojet'] ?>)">Supprimer</button></div>
+                            <div class="Projets-content-container-button-acceder"><button>Accéder</button></div>
+                            <div class="Projets-content-container-button-supprimer"><button>Supprimer</button></div>
                         </div>
                     <?php endforeach; ?>
                     <div class="bouton-creation-container">
-                        <button onclick="createProjet()" class="bouton-creation">Créer un nouveau projet</a></button>
+                        <button class="bouton-creation">Créer un nouveau projet</a></button>
                     </div>
                 </div>
             </div>
@@ -105,7 +105,7 @@ if ($role == 'Admin') {
                             <div class="Tickets-content-container-title">Ticket ID: <?= $ticket['idticket'] ?></div>
                             <div class="Tickets-content-container-description">Raison: <?= $ticket['raisonticket'] ?></div>
                             <div class="Tickets-content-container-date">Date: <?= $ticket['dateticket'] ?></div>
-                            <div class="Tickets-content-container-button-traiter"><button onclick="traiterTicket(<?=$ticket['idticket']?>)">Traiter</button></div>
+                            <div class="Tickets-content-container-button-traiter"><button>Traiter</button></div>
                         </div>
                     <?php endforeach; ?>
                 </div>
@@ -123,13 +123,23 @@ if ($role == 'Admin') {
         const creerProjet = document.getElementById('.bouton-creation');
         const supprimerProjet = document.getElementById('.Projets-content-container-button-supprimer');
         const accederProjet = document.getElementById('.Projets-content-container-button-acceder');
-        const traiterTicket = document.getElementById('.Projets-content-container-button-traiter');
+        const traiterBouton = document.getElementById('.Projets-content-container-button-traiter');
 
-        creerProjet.addEventListener('click', createProjet);
-        supprimerProjet.addEventListener('click', deleteProjet);
-        accederProjet.addEventListener('click', ouvrirProjet);
-        traiterTicket.addEventListener('click', traiterTicket);
-        
+        creerProjet.addEventListener('click', function() {
+            createProjet();
+        });
+        supprimerProjet.addEventListener('click', function() {
+            deleteProjet(<?= $projet['idprojet'] ?>);
+            window.location.reload();
+        }
+        accederProjet.addEventListener('click', function() {
+            ouvrirProjet(<?= $projet['idprojet'] ?>);
+        });
+        traiterBouton.addEventListener('click', function() {
+            traiterTicket(<?=$ticket['idticket']?>);
+            window.location.reload();
+        });
+
         function deleteProjet(idProjet) {
             <?php
                 $query = $pdo->prepare("DELETE FROM Projet WHERE idProjet = :idProjet");
