@@ -83,12 +83,12 @@ if ($role == 'Admin') {
                         <div class="Projets-content-container">
                             <div class="Projets-content-container-title">Projet :</div>
                             <div class="Projets-content-container-description"><?= $projet['idprojet'] ?></div>
-                            <div class="Projets-content-container-button-acceder"><button>Accéder</button></div>
-                            <div class="Projets-content-container-button-supprimer"><button>Supprimer</button></div>
+                            <div class="Projets-content-container-button-acceder"><button onclick = "ouvrirProjet(<?= $projet['idprojet'] ?>)">Accéder</button></div>
+                            <div class="Projets-content-container-button-supprimer"><button onclick="deleteProjet(<?= $projet['idprojet'] ?>)">Supprimer</button></div>
                         </div>
                     <?php endforeach; ?>
                     <div class="bouton-creation-container">
-                        <button class="bouton-creation">Créer un nouveau projet</a></button>
+                        <button onclick="createProjet()" class="bouton-creation">Créer un nouveau projet</button>
                     </div>
                 </div>
             </div>
@@ -105,7 +105,7 @@ if ($role == 'Admin') {
                             <div class="Tickets-content-container-title">Ticket ID: <?= $ticket['idticket'] ?></div>
                             <div class="Tickets-content-container-description">Raison: <?= $ticket['raisonticket'] ?></div>
                             <div class="Tickets-content-container-date">Date: <?= $ticket['dateticket'] ?></div>
-                            <div class="Tickets-content-container-button-traiter"><button>Traiter</button></div>
+                            <div class="Tickets-content-container-button-traiter"><button onclick="traiterTicket(<?=$ticket['idticket']?>)">Traiter</button></div>
                         </div>
                     <?php endforeach; ?>
                 </div>
@@ -120,51 +120,35 @@ if ($role == 'Admin') {
         </section>
     </footer>
     <script>
-        const creerProjet = document.getElementById('.bouton-creation');
-        const supprimerProjet = document.getElementById('.Projets-content-container-button-supprimer');
-        const accederProjet = document.getElementById('.Projets-content-container-button-acceder');
-        const traiterBouton = document.getElementById('.Projets-content-container-button-traiter');
-
-        creerProjet.addEventListener('click', function() {
-            createProjet();
-        });
-        supprimerProjet.addEventListener('click', function() {
-            deleteProjet(<?= $projet['idprojet'] ?>);
-            window.location.reload();
-        });
-        accederProjet.addEventListener('click', function() {
-            ouvrirProjet(<?= $projet['idprojet'] ?>);
-        });
-        traiterBouton.addEventListener('click', function() {
-            traiterTicket(<?=$ticket['idticket']?>);
-            window.location.reload();
-        });
-
         function deleteProjet(idProjet) {
             <?php
                 $query = $pdo->prepare("DELETE FROM Projet WHERE idProjet = :idProjet");
-                $query->bindParam(':idProjet', $_POST['idProjet']);
+                $query->bindParam('idProjet', $_POST['idProjet']);
                 $query->execute();
+                
             ?>
+            window.location.reload();
         }
 
         function createProjet(){
-            <?php
-            $query = $pdo->prepare("INSERT INTO Projet (datecreationprojet, pseudonyme) VALUES (now(), '$id_utilisateur');");  
-            $query->execute();
-            ?>
-            //actualisation de la page pour recharger la liste des projets
-            window.location.reload();
+            fetch('creation_projet.php', {
+                method: 'POST'
+            })
+            .then(response => response.text())
+            .then(text => {
+                console.log(text); 
+                window.location.reload(); // Reload the page to update the list of projects
+            })
+            .catch(error => console.error('Error:', error));
         }
 
         function traiterTicket(idTicket){
             <?php
                 $query = $pdo->prepare("DELETE FROM TicketSupport WHERE idTicket = :idTicket");
-                $query->bindParam(':idTicket', $_POST['idTicket']);
+                $query->bindParam('idTicket', $_POST['idTicket']);
                 $query->execute();
             ?>
         }
-
         function ouvrirProjet(idProjet) {
             window.location.href = "Simulation.php?idProjet=" + idProjet;
         }
