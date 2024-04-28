@@ -131,7 +131,7 @@ if ($role == 'Admin') {
         supprimerProjet.addEventListener('click', function() {
             deleteProjet(<?= $projet['idprojet'] ?>);
             window.location.reload();
-        }
+        });
         accederProjet.addEventListener('click', function() {
             ouvrirProjet(<?= $projet['idprojet'] ?>);
         });
