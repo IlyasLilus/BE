@@ -80,7 +80,7 @@ if ($role == 'Admin') {
                         <div class="Projets-content-container">
                             <div class="Projets-content-container-title">Projet :</div>
                             <div class="Projets-content-container-description"><?= $projet['idprojet'] ?></div>
-                            <div class="Projets-content-container-button-acceder"><button><a href="Simulation.php">Accéder</a></button></div>
+                            <div class="Projets-content-container-button-acceder"><button onclick = ouvrirProjet(<?= $projet['idprojet'] ?>)">Accéder</button></div>
                             <div class="Projets-content-container-button-supprimer"><button onclick="deleteProjet(<?= $projet['idprojet'] ?>)">Supprimer</button></div>
                         </div>
                     <?php endforeach; ?>
@@ -138,6 +138,9 @@ if ($role == 'Admin') {
                 $query->bindParam(':idTicket', $_POST['idTicket']);
                 $query->execute();
             ?>
+        }
+        function ouvrirProjet(idProjet) {
+            window.location.href = "Simulation.php?idProjet=" + idProjet;
         }
     </script>
 <!-- Comment charger un projet existant sur la page de Simulation.php ? -->

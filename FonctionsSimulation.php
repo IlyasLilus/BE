@@ -10,62 +10,64 @@
 
     $rawData = file_get_contents("php://input");
     $data = json_decode($rawData, true);
+
     
     if (isset($data['action'])) {
+        $values = $data['data'];
         switch ($data['action']) {
             case 'add_object':
-                if (isset($data['name'], $data['ip'], $data['mask'], $data['type'], $data['x'], $data['y'])) {
-                    echo add_object($dsn, $user, $pass, $data['name'], $data['ip'], $data['mask'], $data['type'], $data['x'], $data['y']);
-                } else {
-                    echo "Missing one or more required parameters for adding object.";
+                if (isset($values['name'], $values['ip'], $values['mask'], $values['type'], $values['x'], $values['y'], $values['projectId'])) {
+                    echo add_object($dsn, $user, $pass, $values['name'], $values['ip'], $values['mask'], $values['type'], $values['x'], $values['y'], $values['projectId']);
+                } else {    
+                    echo "Missing one or more required parameters for adding object. name: " . $values['name'] . "ip: " . $values['ip'] . "mask: " . $values['mask'] . "type: " . $values['type'] . "x: " . $values['x'] . "y: " .$values['y']. "projectId: " . $values['projectId'];
                 }
                 break;
             case 'del_object':
-                echo del_object($dsn, $user, $pass, $data['id']);
+                echo del_object($dsn, $user, $pass, $values['id']);
                 break;
             case 'edit_object':
-                echo edit_object($dsn, $user, $pass, $data['id'], $data['name'], $data['ip'], $data['mask']);
+                echo edit_object($dsn, $user, $pass, $values['id'], $values['name'], $values['ip'], $values['mask']);
                 break;
             case 'move_object':
-                echo move_object($dsn, $user, $pass, $data['id'], $data['x'], $data['y']);
+                echo move_object($dsn, $user, $pass, $values['id'], $values['x'], $values['y']);
                 break;
             case 'add_connection':
-                echo add_connection($dsn, $user, $pass, $data['idObjetA'], $data['idObjetB'], $data['InterfaceA'], $data['InterfaceB']);
+                echo add_connection($dsn, $user, $pass, $values['idObjetA'], $values['idObjetB'], $values['InterfaceA'], $values['InterfaceB']);
                 break;
             case 'del_connection':
-                echo del_connection($dsn, $user, $pass, $data['idObjetA'], $data['idObjetB']);
+                echo del_connection($dsn, $user, $pass, $values['idObjetA'], $values['idObjetB']);
                 break;
             case 'del_connections':
-                echo del_connections($dsn, $user, $pass,$data['idObjetA']);
+                echo del_connections($dsn, $user, $pass,$values['idObjetA']);
                 break;
             case 'add_route':
-                echo add_route($dsn, $user, $pass, $data['idObjet'], $data['Destination'], $data['nexthop'], $data['Interface']);
+                echo add_route($dsn, $user, $pass, $values['idObjet'], $values['Destination'], $values['nexthop'], $values['Interface']);
                 break;
             case 'del_route':
-                echo del_route($dsn, $user, $pass, $data['idRoute']);
+                echo del_route($dsn, $user, $pass, $values['idRoute']);
                 break;
             case 'add_datagramme':
-                echo add_datagramme($dsn, $user, $pass, $data['TTL'], $data['protocole'], $data['SourceData'], $data['Destination']);
+                echo add_datagramme($dsn, $user, $pass, $values['TTL'], $values['protocole'], $values['SourceData'], $values['Destination']);
                 break;
             case 'del_datagramme':
-                echo del_datagramme($dsn, $user, $pass, $data['idDatagramme']);
+                echo del_datagramme($dsn, $user, $pass, $values['idDatagramme']);
                 break;
             case 'main':
-                echo main($data['idDatagramme']);
+                echo main($values['iddatagramme']);
                 break;
             default:
                 echo "Invalid function.";
         }
     }
 
-    function add_object($dsn, $user, $pass, $name, $ip, $mask, $type, $x, $y){
+    function add_object($dsn, $user, $pass, $name, $ip, $mask, $type, $x, $y, $projectId){
         $conn = new PDO($dsn, $user, $pass);
-        $sql = "INSERT INTO objet (typeObjet, NomObjet, xObjet, yObjet, dateObjet, IpObjet, masqueObjet) 
-                VALUES ('$type', '$name', $x, $y, now(), '$ip', '$mask') 
+        $sql = "INSERT INTO objet (typeObjet, NomObjet, xObjet, yObjet, dateObjet, IpObjet, masqueObjet, IdProjet) 
+                VALUES ('$type', '$name', $x, $y, now(), '$ip', '$mask', $projectId) 
                 RETURNING IdObjet";
         $result = $conn->query($sql);
         $row = $result->fetch(PDO::FETCH_ASSOC);
-        $idObjet = $row['IdObjet'];
+        $idObjet = $row['idobjet'];
         
         return $idObjet;
     }

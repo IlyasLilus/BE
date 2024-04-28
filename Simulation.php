@@ -1,6 +1,43 @@
 
 <!DOCTYPE html>
 <html>
+<?php
+    require 'FonctionsSimulation.php';
+    $host = 'localhost';
+    $db = 'BE';
+    $user = 'postgres';
+    $pass = 'a';
+    $port = '5432';
+    $dsn = "pgsql:host=$host;port=$port;dbname=$db";
+    //$idProjet = $_GET['idProjet'];
+    //pour test: 
+    $idProjet = 1;
+
+    $idDatagramme = null;
+
+    function modifierObjet($dsn, $user, $pass, $name, $ip, $mask, $type){
+        if($name != null && $ip != null && $mask != null && $type != null){
+            if(filter_var($ip, FILTER_VALIDATE_IP) && filter_var($mask, FILTER_VALIDATE_IP)){
+                if($type == 'pc' || $type == 'routeur'){
+                    return edit_object($dsn, $user, $pass, $name, $ip, $mask,$type);
+                }
+                else return "E1";
+            }
+            else return "E2";
+        }
+        else return "E3";
+    }
+
+    function ajouterDatagramme($dsn, $user, $pass, $ttl, $protocole, $source, $destination){
+        if($ttl != null && $protocole != null && $source != null && $destination != null){
+            if(filter_var($source, FILTER_VALIDATE_IP) && filter_var($destination, FILTER_VALIDATE_IP)){
+                return add_datagramme($dsn, $user, $pass, $ttl, $protocole, $source, $destination);
+            }
+            else return "E1";
+        }
+        else return "E2";
+    }
+?>
 <head>
     <title>Simulation</title>
     <link rel="stylesheet" type="text/css" href="style/style_simulation.css">
@@ -24,7 +61,6 @@
 <footer>
     <button id="datagramme-button" style="position: absolute; background-color: #B557FF; color: white; font-family: 'Poppins', sans-serif; border-radius: 76px; border: none; padding: 10px 20px; cursor: pointer; right: 120px; top: 10px">Datagramme</button>
     <button id="lancer-button" style="position: absolute; background-color: #B557FF; color: white; font-family: 'Poppins', sans-serif; border-radius: 76px; border: none; padding: 10px 20px; cursor: pointer; right: 20px; top: 10px">Lancer</button>
-    <!-- TODO lancer-button doit appeler main de fonctionsSimulation.php avec $idDatagramme -->
     <div id="wire" class="draggable"></div>
     <div id="pc" class="draggable"></div>
     <div id="router" class="draggable"></div>
@@ -50,6 +86,8 @@
             <input type="text" id="adresse-ip" name="adresse-ip"><br>
             <label for="reseau" id="reseau-label" style="display: none;">Masque:</label>
             <input type="text" id="reseau" name="reseau" style="display: none;">
+            <label for="idObjet">Id de l'objet:</label>
+            <input type= "idcurrentObjet" id= "idcurrentObjet" style="display: none;"><br>
             <input type="submit" value="Submit">
             <button onclick="contextMenu.style.display = 'none';">Annuler</button>
         </form>
@@ -60,8 +98,18 @@
             $ip = $_POST['adresse-ip'];
             $mask = $_POST['reseau'];
             $type = $_POST['type'];
-            edit_object($dsn, $user, $pass, $name, $ip, $mask,$type);
-        }
+            $idObjet = $_POST['idcurrentObjet'];
+            modifierObjet($dsn, $user, $pass, $name, $ip, $mask,$type);
+            if($idObjet=="E1"){
+                echo "<script> alert('Erreur: Protocole incorrect')</script>";
+            }
+            else if($idObjet=="E2"){
+                echo "<script> alert('Erreur: Adresse IP incorrecte') </script>";
+            }
+            else if($idObjet=="E3"){
+                echo "<script> alert('Erreur: Champs vides'); console.log('AAAAAAAAAAAAAAAAAAAAAAAA');</script>";
+            }
+        } 
         ?>
     </div>
 </div>
@@ -87,7 +135,17 @@
             $protocole = $_POST['protocole'];
             $source = $_POST['source'];
             $destination = $_POST['destination'];
-            $idDatagramme = add_datagramme($dsn, $user, $pass, $ttl, $protocole, $source, $destination);
+            $idDatagramme = ajouterDatagramme($dsn, $user, $pass, $ttl, $protocole, $source, $destination);
+
+            if($idDatagramme=="E1"){
+                echo "Erreur: Adresse IP incorrecte";
+            }
+            else if($idDatagramme=="E2"){
+                echo "Erreur: Champs vides";
+            }
+            else{
+                echo "<script> var id_Datagramme = " + json_encode($idDatagramme) + ";</script>";
+            }
         }
         ?>
     </div>
@@ -111,6 +169,7 @@
     const reseauInput = document.getElementById('reseau');
     const reseauLabel = document.getElementById('reseau-label');
     const typeInput = document.getElementById('type');
+    const currentObject = document.getElementById('idcurrentObjet');
     const datagrammeBouton = document.getElementById('datagramme-button');
     const datagrammeFenetre = document.getElementById('datagramme');
     const datagrammeFormulaire = document.getElementById('datagramme-form');
@@ -164,9 +223,14 @@
             typeInput.style.display = 'block';
         }
         //Rentre le clone dans la BD et récupère l'id
-        var cloneData = {name: null, ip: '0', mask: '0', type: typeInput.value, x: clone.getAttribute('data-x'), y: clone.getAttribute('data-y')};
+        var cloneData = {name: "newborn", ip: '0.0.0.0', mask: '0.0.0.0', type: typeInput.value, x: clone.getBoundingClientRect().left, y: clone.getBoundingClientRect().top, projectId: <?php echo $idProjet; ?>};
         var myResult = await sendData('add_object',cloneData);
         clone.setAttribute('id_bd', myResult);
+
+        currentObject.value = myResult;
+        currentObject.disabled = true;
+        currentObject.style.display = 'block';
+
 
         return clone;
     }
@@ -182,7 +246,7 @@
         target.setAttribute('data-x', x); // Mise à jour des coordonnées de l'élément
         target.setAttribute('data-y', y);
         //mise à jours des cooordoonées dans la BD
-        var moveData = {idObjet: target.getAttribute('id_bd'), x: x, y: y};
+        var moveData = {id: target.getAttribute('id_bd'), x: x, y: y};
         sendData('move_object',moveData);
         
         // Redessiner les connexions lors du déplacement des éléments
@@ -299,7 +363,7 @@
         contextMenu.style.display = 'none';
         connexions = connexions.filter(connection => connection.start !== ElementSelectionne && connection.end !== ElementSelectionne);
         //Suppression dans la BD
-        var delData = {idObjet: ElementSelectionne.getAttribute('id_bd')};
+        var delData = {id: ElementSelectionne.getAttribute('id_bd')};
         sendData('del_object',delData);
     }); 
 
@@ -325,27 +389,20 @@
             typeInput.disabled = true;
             typeInput.style.display = 'block';
         }
-        config.style.display = 'block'; 
+        config.style.display = 'block';
+        currentObject.value = ElementSelectionne.getAttribute('id_bd');
     });
 
     configFormulaire.addEventListener('submit', function (event) {
         // Soumission du formulaire de configuration
         event.preventDefault();
         config.style.display = 'none';
-        //Mise à jour dans la BD
-        <?php
-        $name = $_REQUEST['nom'];
-        $IpObjet = $_REQUEST['adresse-ip'];
-        $masqueObjet = $_REQUEST['reseau'];
-        ?>
-        var updateData = {idObjet: ElementSelectionne.getAttribute('id_bd'), name: document.getElementById('nom').value, ip: document.getElementById('adresse-ip').value, mask: document.getElementById('reseau').value, type: document.getElementById('type').value};
-        sendData('edit_object',updateData);
     });
 
     document.getElementById('lancer-button').addEventListener('click', function() {
         // Lancer la simulation
-        // L'id du datagramme vas ou 
-        sendData('main',id_datagram);
+        var idData = {iddatagramme: <?php echo $idDatagramme; ?>};
+        sendData('main',idData);
     });
 
     datagrammeBouton.addEventListener('click', function () {
@@ -353,20 +410,10 @@
         datagrammeFenetre.style.display = 'block';
     });
 
-    datagrammeFormulaire.addEventListener('submit', async function (event) {
+    datagrammeFormulaire.addEventListener('submit', function (event) {
         // Soumission du formulaire de configuration du datagramme
         event.preventDefault();
         datagrammeFenetre.style.display = 'none';
-        //Mise à jour dans la BD
-        <?php
-        $TTL = $_REQUEST['ttl'];
-        $protocole = $_REQUEST['protocolee'];
-        $SourceData = $_REQUEST['source'];
-        $Destination = $_REQUEST['destination']
-        ?>
-        var datagrammeData = {ttl: document.getElementById('ttl').value, protocole: document.getElementById('protocole').value, source: document.getElementById('source').value, destination: document.getElementById('destination').value};
-        var id_datagram= await sendData('add_datagramme',datagrammeData);
-        
     });
 
     async function sendData(action, jsonData) {
