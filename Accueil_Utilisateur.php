@@ -1,6 +1,9 @@
 <?php
 session_start();
-$id_utilisateur = $_SESSION['id_utilisateur'];
+//$id_utilisateur = $_SESSION['id_utilisateur'];
+//pour teste:
+$id_utilisateur = 'User1';
+
 $host = 'localhost';
 $db   = 'BE';
 $user = 'postgres';
@@ -56,7 +59,7 @@ if ($role == 'Admin') {
             </ul>
         </nav>
         <div class="cont-header">
-            <div><a href="#home"><img class="logo" src="netvision.png" alt=""></a></div>
+            <div><a href="#home"><img class="logo" src="image/netvision.png" alt=""></a></div>
             <?php if (isset($_SESSION['loggedin']) && $_SESSION['loggedin'] == true) : ?>
                 <button class="commencer"><a href="Acceuil_Utilisateur.php">Mon compte</a></button>
             <?php else : ?>
@@ -80,7 +83,7 @@ if ($role == 'Admin') {
                         <div class="Projets-content-container">
                             <div class="Projets-content-container-title">Projet :</div>
                             <div class="Projets-content-container-description"><?= $projet['idprojet'] ?></div>
-                            <div class="Projets-content-container-button-acceder"><button onclick = ouvrirProjet(<?= $projet['idprojet'] ?>)">Accéder</button></div>
+                            <div class="Projets-content-container-button-acceder"><button onclick = "ouvrirProjet(<?= $projet['idprojet'] ?>)">Accéder</button></div>
                             <div class="Projets-content-container-button-supprimer"><button onclick="deleteProjet(<?= $projet['idprojet'] ?>)">Supprimer</button></div>
                         </div>
                     <?php endforeach; ?>
@@ -127,7 +130,7 @@ if ($role == 'Admin') {
 
         function createProjet(){
             <?php
-                $query = $pdo->prepare("INSERT INTO Projet "); //Solution pour l'ID ? 
+                $query = $pdo->prepare("INSERT INTO Projet (datecreationprojet, pseudonyme) VALUES (now(), '$id_utilisateur');");  
                 $query->execute();
             ?>
         }
@@ -143,5 +146,4 @@ if ($role == 'Admin') {
             window.location.href = "Simulation.php?idProjet=" + idProjet;
         }
     </script>
-<!-- Comment charger un projet existant sur la page de Simulation.php ? -->
 </body>
