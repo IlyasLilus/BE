@@ -9,9 +9,8 @@
     $pass = 'a';
     $port = '5432';
     $dsn = "pgsql:host=$host;port=$port;dbname=$db";
-    //$idProjet = $_GET['idProjet'];
-    //pour test: 
-    $idProjet = 1;
+    $idProjet = $_GET['idProjet'];
+    
 
     global $idDatagramme;
     $idDatagramme = 0;

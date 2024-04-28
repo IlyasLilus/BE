@@ -1,8 +1,7 @@
 <?php
 session_start();
-//$id_utilisateur = $_SESSION['id_utilisateur'];
-//pour teste:
-$id_utilisateur = 'User1';
+$id_utilisateur = $_SESSION['id_utilisateur'];
+
 
 $host = 'localhost';
 $db   = 'BE';
