@@ -126,11 +126,11 @@ if ($role == 'Admin') {
             headers: {
                 'Content-Type': 'application/x-www-form-urlencoded',
             },
-            body: 'idProjet=' + idProjet  // Ensure this data is properly encoded in a real scenario
+            body: 'idProjet=' + idProjet
             })
             .then(response => response.text())
             .then(text => {
-            console.log(text); // Log response from the PHP script
+            console.log(text); // Log response
             window.location.reload(); // Reload the page to update the list of projects
             }).catch(error => console.error('Error:', error));
         }
