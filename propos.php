@@ -49,7 +49,7 @@ NetVision est le fruit du travail d'un groupe d'étudiants passionnés par les r
                 <img src="image/jaballah.jpeg" alt="Membre 3" class="left">
                 <div class="text">
                     <h3>Ilyas JABALLAH</h3>
-                    <p>Etudiant en L3 IRT passionée par la cybersécurité </p>
+                    <p>Etudiant en L3 IRT passionée par le cloud et la cybersécurité</p>
                 </div>
             </article>
             <article class="member">
