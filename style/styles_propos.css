@@ -1,0 +1,156 @@
+
+* {
+    margin: 0;
+    padding: 0;
+    color: black;
+    font-family: sans-serif;
+    text-decoration: none;
+    list-style: none;
+    letter-spacing: 1px;
+}
+
+.header {
+    height: 50px;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 30px 10%;
+    background-color: black;
+    height: 30px;
+    
+}
+.cont-header{
+    display: flex;
+}
+
+.logo{
+    width:80px;
+    height: 70px;
+    position:relative;
+    right:440px;
+
+}
+.cont-header a{
+    color: white;    
+    padding: 10px;
+    font-size: 22px;
+    font-weight: bold;
+    margin-bottom: 0px;
+}
+.commencer a{
+    background-color:rgb(232, 7, 146);
+    border-radius: 30px;
+    margin-left: 15px;  
+}
+.connexion a{
+    background-color: white;
+    color:black;
+    border-radius: 30px;
+}
+button{
+    background: none;
+    border: none;
+}
+.logo:hover{
+    transform: rotate(360deg);
+    transition: 1s;
+}
+#titre{
+    color: orange;
+    position: fixed;
+    top: 29px;
+    left: 130px;
+
+}
+nav{
+
+    margin-right: -10%;
+}
+nav li{
+    display: inline-block;
+    padding-right:40px;
+}
+
+li a{
+    font-weight: bold;
+    font-size: 22px;
+
+    color: white;
+}
+
+.go a:hover {
+    cursor: pointer;
+    color: rgb(232, 7, 146);
+    transition: 0.5s;
+}
+
+
+
+.title{
+    color: white;
+    text-align: center;
+    margin: 60px;
+    font-family: 'Poppins', sans-serif;
+    font-weight: bold;
+    font-size: 50px;
+}
+
+.about-netvision,
+.goals {
+    /* background-color: #1F2421;*/ 
+    /* Dark green background */
+    /* border: 2px solid #D81159; 
+    /* Magenta border */
+    padding: 15px;
+    margin: 15px;
+    h2 {
+            color: #D81159;
+            /* Magenta color for all <h2> elements */
+        }
+    
+        p {
+            color: #000000;
+            /* Black color for all <p> elements */
+        }
+}
+
+.team {
+    display: flex;
+    justify-content: space-around;
+    margin: 15px;
+}
+
+.member {
+    background-color: #F3E8EE;
+    /* Light pink background for member sections */
+    
+    /* Teal border */
+    padding: 10px;
+    width: 30%;
+    text-align: center;
+    color: #1F2421;
+    /* Dark text for member sections */
+}
+
+.member img {
+    
+    /* Magenta border for images */
+    width: 80%;
+    /* Adjust as needed */
+    margin: 10px 0;
+}
+
+.member:nth-child(2) {
+    flex-direction: column-reverse;
+    /* Reverse the order for the second member */
+}
+
+@media (max-width: 768px) {
+    .team {
+        flex-direction: column;
+    }
+
+    .member {
+        width: auto;
+    }
+}
