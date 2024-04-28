@@ -120,6 +120,23 @@ if ($role == 'Admin') {
         </section>
     </footer>
     <script>
+        document.querySelector('.bouton-creation').addEventListener('click', function() {
+            createProjet();
+        });
+
+        document.querySelector('.Projets-content-container-button-supprimer').addEventListener('click', function() {
+            deleteProjet(idProjet);
+        });
+
+        document.querySelector('.Projets-content-container-button-acceder').addEventListener('click', function() {
+            ouvrirProjetProjet(idProjet);
+        });
+
+        document.querySelector('.Projets-content-container-button-traiter').addEventListener('click', function() {
+            traiterTicket(idTicket);
+        });
+
+
         function deleteProjet(idProjet) {
             <?php
                 $query = $pdo->prepare("DELETE FROM Projet WHERE idProjet = :idProjet");
@@ -130,8 +147,8 @@ if ($role == 'Admin') {
 
         function createProjet(){
             <?php
-                $query = $pdo->prepare("INSERT INTO Projet (datecreationprojet, pseudonyme) VALUES (now(), '$id_utilisateur');");  
-                $query->execute();
+            $query = $pdo->prepare("INSERT INTO Projet (datecreationprojet, pseudonyme) VALUES (now(), '$id_utilisateur');");  
+            $query->execute();
             ?>
             //actualisation de la page pour recharger la liste des projets
             window.location.reload();
@@ -144,6 +161,7 @@ if ($role == 'Admin') {
                 $query->execute();
             ?>
         }
+
         function ouvrirProjet(idProjet) {
             window.location.href = "Simulation.php?idProjet=" + idProjet;
         }
