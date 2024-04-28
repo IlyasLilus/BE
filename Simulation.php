@@ -127,8 +127,6 @@
             <input type="text" id="source" name="source"><br>
             <label for="destination">Destination:</label><br>
             <input type="text" id="destination" name="destination"><br>
-            <label for="idDatagramme">Id du datagramme:</label>
-            <input type= "iddatagramme" id= "iddatagramme" style="display: none;"><br>
             <input type="submit" value="Submit">
             <button onclick="datagrammeFenetre.style.display = 'none'">Annuler</button>
         </form>

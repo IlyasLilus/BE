@@ -141,6 +141,31 @@ li a{
 
 }
 
+.Card1-Image{
+    position: absolute;
+    width: 18vw;
+    height: 16vw;
+    left: 1vw;
+    top: 2vw;
+    z-index: 10;
+}
+
+.Card2-Image{
+    position: absolute;
+    width: 18vw;
+    height: 18vw;
+    left: 1vw;
+    top: 1vw;
+}
+
+.Card3-Image{
+    position: absolute;
+    width: 18vw;
+    height: 18vw;
+    left: 1vw;
+    top: 1vw;
+}
+
 .Card1{
     position: absolute;
     width: 20vw;

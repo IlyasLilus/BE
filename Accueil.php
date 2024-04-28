@@ -39,12 +39,13 @@ session_start();
     <section class="preview">
         <img class="image1" src="image/nasa-Q1p7bh3SHj8-unsplash 1.png" alt="Image1">
         <div class="Card1">
+            <img class="Card1-Image" src="image/demo1.png" alt="Card1">
         </div>
         <div class="Card2">
-
+            <img class="Card2-Image" src="image/demo2.png" alt="Card2">
         </div>
         <div class="Card3">
-
+            <img class="Card3-Image" src="image/.png" alt="Card3">
         </div>
 
     </section>
@@ -94,12 +95,12 @@ session_start();
                 <div class="Client1-Box"></div>
                 <div class="Client1-Name">Ashraf Belhiss</div>
                 <div class="Client1-Location">Toulouse, France</div>
-                <div class="Client1-Text">C’est l’application teh les fou wallah</div>
+                <div class="Client1-Text">Cette application est impréssionante</div>
                 <img class="Client1-Image" src="image/1698328915992.jpg" alt="Client1">
             </section>
             <section class="review-box" id="Client2">
                 <div class="Client1-Box"></div>
-                <div class="Client1-Name">André Aoun</div>
+                <div class="Client1-Name">Ashraf Belhiss 2</div>
                 <div class="Client1-Location">Toulouse, France</div>
                 <div class="Client1-Text">Ce projet mérite un 20/20</div>
                 <img class="Client1-Image" src="image/1698328915992.jpg" alt="Client1">
