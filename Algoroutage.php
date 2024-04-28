@@ -187,45 +187,56 @@ function findAndSaveNextHops($pdo, $idObject, $destinationIP) {
 }
 
 
-function main($idDatagramme){
-    $datagramme[] = get_datagramme($idDatagramme);
-    $TTL = $datagramme[0];
-    $protocole = $datagramme[1];
-    $ipSource = $datagramme[2];
-    $ipDestination = $datagramme[3];
-    
-    $objetActuel = get_objet($ipSource);
-    $estArrive = false;
-    $foundmatch = false;
+function main($pdo, $idDatagramme) {
+    // Récupérer les informations du datagramme
+    $datagramme = get_datagramme($idDatagramme);
+    if (!$datagramme) {
+        return "Erreur : Datagramme non trouvé.";
+    }
 
-    //Boucle de parcours du chemin vers la déstination
-    while($TTL > 0 and !$estArrive){
-        $table = get_table($objetActuel);
-        foreach ($table as $route){
-            if (ipMatch($ipDestination, $route[0])){
-                $objetActuel = get_next_objet($route,$objetActuel);
-                //Sortie LOG -> BD table transporter 
-                $foundmatch = true;
+    $TTL = $datagramme['TTL'];
+    $ipSource = $datagramme['ipSource'];
+    $ipDestination = $datagramme['ipDestination'];
+
+    // Récupérer l'objet actuel basé sur l'IP source
+    $objetActuel = get_objet($ipSource);
+    if (!$objetActuel) {
+        return "Erreur : Objet non trouvé pour l'IP source spécifiée.";
+    }
+
+    // Vérifier et parcourir la route jusqu'à la destination
+    while ($TTL > 0) {
+        $routes = get_table($objetActuel);
+        if (empty($routes)) {
+            return "Erreur : Table de routage vide ou aucune route disponible.";
+        }
+
+        $foundMatch = false;
+        foreach ($routes as $route) {
+            if (ipMatch($ipDestination, $route[0], $objetActuel['masque'])) {
+                $newRouter = getNewNexthop($pdo, $route[1], $objetActuel['id']);
+                if ($newRouter === false) {
+                    break; // Aucun nouveau nexthop trouvé ou boucle détectée
+                }
+                $objetActuel = get_objet($newRouter); // Mise à jour de l'objet actuel
+                $foundMatch = true;
                 break;
             }
         }
-        if (!$foundmatch){ // cas ou aucune route n'est possible
-            return "Erreur : Pas de route trouvée";
-        }else{
-            $foundmatch = false;
+
+        if (!$foundMatch) {
+            return "Erreur : Aucune correspondance de route trouvée.";
         }
 
-        if ($objetActuel == $ipDestination){
-            $estArrive = true;
+        if ($objetActuel['ip'] == $ipDestination) {
+            return "Le datagramme est arrivé à destination.";
         }
+
         $TTL--;
     }
 
-    if ($estArrive){
-        return "Le datagramme est arrivé à destination";
-    }
-    if ($TTL == 0){
-        return "Erreur : Le datagramme a expiré";
+    if ($TTL == 0) {
+        return "Erreur : Le datagramme a expiré.";
     }
     return "Erreur inconnue";
 
